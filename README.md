@@ -1,7 +1,8 @@
 `dreadlocks`
 ==
 
-> :lock: A cross-platform file-locking software library for Python.
+> :lock: A cross-platform file-locking software library for Python that
+> supports thread-level locks, process-level locks, and both simultaneously.
 
 
 ### Licensing
