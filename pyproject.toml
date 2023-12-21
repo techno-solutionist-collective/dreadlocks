@@ -27,7 +27,7 @@ black = "^23.9.1"
 optional = true
 
 [tool.poetry.group.type.dependencies]
-pyright = "^1.1.329"
+pyright = "^1.1.342"
 
 
 [tool.poetry.group.test]
