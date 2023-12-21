@@ -74,6 +74,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
+          fail_ci_if_error: true
           flags: unit,${{ matrix.platform }},python-${{ matrix.python-version }}
           files: ./.coverage.xml
 
@@ -115,6 +116,7 @@ jobs:
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
         with:
+          fail_ci_if_error: true
           flags: doctest,${{ matrix.platform }},python-${{ matrix.python-version }}
           files: ./.coverage.xml
 
