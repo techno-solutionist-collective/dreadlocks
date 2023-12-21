@@ -110,6 +110,14 @@ jobs:
         shell: bash
         run: poetry run tox -e ${{ matrix.tox-env }}
 
+      - uses: codecov/codecov-action@v3
+        if: matrix.tox-env == 'doctest-cover'
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        with:
+          flags: doctest,${{ matrix.platform }},python-${{ matrix.python-version }}
+          files: ./.coverage.xml
+
 
   pre-commit:
 
