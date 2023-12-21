@@ -1,0 +1,235 @@
+name: ci
+
+on:
+  workflow_call:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  lock-file:
+
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.12'
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Validate lock file
+        run: poetry check
+
+
+  unit:
+
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        python-version:
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+        include:
+          - tox-env: 'unit'
+          - python-version: '3.9'
+            tox-env: ${{ github.actor != 'dependabot[bot]' && 'unit-cover' || 'unit' }}
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run unit tests with tox${{ matrix.tox-env == 'unit-cover' && ' (with coverage)' || '' }}
+        shell: bash
+        run: poetry run tox -e ${{ matrix.tox-env }}
+
+
+  doctest:
+
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+        python-version:
+          - '3.9'
+          - '3.10'
+          - '3.11'
+          - '3.12'
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Run doctest tests with tox
+        shell: bash
+        run: poetry run tox -e doctest
+
+
+  pre-commit:
+
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.12'
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Pre-commit hooks
+        env:
+          SKIP: lint-check,type-check,licenses
+        run: poetry run pre-commit run -a
+
+
+  lint-check:
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.9'
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Lint sources and tests
+        run: poetry run tox -e lint-check
+
+
+  type-check:
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.9'
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Type checking
+        run: poetry run tox -e type-check
+
+
+  licenses:
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.12'
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Check dependencies' licenses
+        run: poetry run tox -e licenses
+
+
+  docs:
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.12'
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build documentation
+        run: |
+          poetry run tox -e docs-build
+
+
+  build:
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.12'
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build package
+        run: poetry build
