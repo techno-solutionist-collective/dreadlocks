@@ -1,0 +1,61 @@
+name: docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    tags:
+      - 'v*'
+  schedule:
+    - cron: "0 0 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+
+  gh-pages:
+
+    if: ${{ github.actor != 'dependabot[bot]' }}
+
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.12'
+
+    runs-on: ${{ matrix.platform }}
+
+
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install graphviz
+        run: sudo apt install graphviz
+
+      - name: Build documentation
+        run: |
+          poetry run tox -e docs-build-versions
+
+      - name: Wait for CI checks workflow to succeed
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.0.1
+        with:
+          workflow: ci.yml
+          sha: ${{ github.sha }}
+
+      - name: Publish docs to GitHub pages
+        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        with:
+          branch: gh-pages
+          folder: build/docs
