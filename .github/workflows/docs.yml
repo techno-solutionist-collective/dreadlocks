@@ -51,6 +51,10 @@ jobs:
         run: |
           poetry run tox -e docs-build-versions
 
+      - name: Disable Jekyll
+        run: |
+          touch build/docs/.nojekyll
+
       - name: Wait for CI checks workflow to succeed
         uses: ArcticLampyrid/action-wait-for-workflow@v1.0.1
         with:
