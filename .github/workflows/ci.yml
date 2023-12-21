@@ -91,6 +91,10 @@ jobs:
           - '3.10'
           - '3.11'
           - '3.12'
+        include:
+          - tox-env: 'doctest'
+          - python-version: '3.9'
+            tox-env: ${{ github.actor != 'dependabot[bot]' && 'doctest-cover' || 'doctest' }}
 
     runs-on: ${{ matrix.platform }}
 
@@ -104,7 +108,7 @@ jobs:
 
       - name: Run doctest tests with tox
         shell: bash
-        run: poetry run tox -e doctest
+        run: poetry run tox -e ${{ matrix.tox-env }}
 
 
   pre-commit:
