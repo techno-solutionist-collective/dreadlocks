@@ -1,0 +1,50 @@
+name: publish
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+
+  pypi:
+
+    if: ${{ github.actor != 'dependabot[bot]' && github.ref_type == 'tag' }}
+
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.12'
+
+    runs-on: ${{ matrix.platform }}
+
+    env:
+      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Build package
+        run: |
+          poetry build
+
+      - name: Wait for CI checks workflow to succeed
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.0.1
+        with:
+          workflow: ci.yml
+          sha: ${{ github.sha }}
+
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          user: __token__
+          password: ${{ env.PYPI_API_TOKEN }}
+          packages_dir: dist/
