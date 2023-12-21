@@ -7,7 +7,7 @@
 
 ## API Documentation
 
-See [docs](https://proc-2.github.io/dreadlocks/latest).
+See [docs](https://techno-solutionist-collective.github.io/dreadlocks/latest).
 
 
 ## Development
