@@ -65,7 +65,7 @@ pdbpp = "^0.10.3"
 optional = true
 
 [tool.poetry.group.coverage.dependencies]
-coverage = "^7.3.2"
+coverage = "^7.3.4"
 
 
 [tool.poetry.group.licenses]
