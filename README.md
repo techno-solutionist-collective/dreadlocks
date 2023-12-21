@@ -5,6 +5,11 @@
 > supports thread-level locks, process-level locks, and both simultaneously.
 
 
+## API Documentation
+
+See [docs](https://proc-2.github.io/dreadlocks).
+
+
 ## Development
 
 The only external requirements are Python and `poetry`.
