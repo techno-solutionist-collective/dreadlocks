@@ -1,3 +1,13 @@
+coverage:
+  status:
+    project:
+      default:
+        target: 95%
+        threshold: 2%
+    patch:
+      default:
+        target: 100%
+
 flag_management:
   default_rules:
     carryforward: false
