@@ -3,7 +3,7 @@ copyright = '2023, Pid Zwei'
 author = 'Pid Zwei'
 
 release = '0.0'
-version = '0.0.1'
+version = '0.0.2'
 
 extensions = [
     'sphinx.ext.duration',
@@ -36,6 +36,6 @@ smv_tag_whitelist = r'^v\d+\.\d+\.\d+$|latest'  # all tags of form v*.*.x and la
 # Whitelist pattern for branches (set to '' to ignore all branches)
 smv_branch_whitelist = r'^.*$'
 smv_released_pattern = r'^.*$'
-smv_latest_version = 'v0.0.1'
+smv_latest_version = 'v0.0.2'
 smv_remote_whitelist = None
 smv_outputdir_format = '{ref.name}'
