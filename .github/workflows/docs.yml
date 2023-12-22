@@ -49,6 +49,8 @@ jobs:
         run: sudo apt install graphviz
 
       - name: Build documentation
+        env:
+          BUILD_REMOTE_BRANCHES: '^origin$'
         run: |
           poetry run tox -e docs-build-versions
 
