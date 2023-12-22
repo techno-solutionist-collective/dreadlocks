@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>path_lock &mdash; dreadlocks 0.0 documentation</title>
+  <title>thread_level_path_lock &mdash; dreadlocks 0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
       <link rel="stylesheet" type="text/css" href="../_static/graphviz.css?v=eafc0fe6" />
@@ -22,8 +22,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="process_level_path_lock" href="dreadlocks.process_level_path_lock.html" />
-    <link rel="prev" title="API" href="../api.html" /> 
+    <link rel="next" title="AcquiringLockWouldBlockError" href="dreadlocks.AcquiringLockWouldBlockError.html" />
+    <link rel="prev" title="process_level_path_lock" href="dreadlocks.process_level_path_lock.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,9 +53,9 @@
 <li class="toctree-l1 current"><a class="reference internal" href="../api.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="../api.html#module-dreadlocks">dreadlocks Package</a><ul class="current">
 <li class="toctree-l3 current"><a class="reference internal" href="../api.html#functions">Functions</a><ul class="current">
-<li class="toctree-l4 current"><a class="current reference internal" href="#">path_lock</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dreadlocks.path_lock.html">path_lock</a></li>
 <li class="toctree-l4"><a class="reference internal" href="dreadlocks.process_level_path_lock.html">process_level_path_lock</a></li>
-<li class="toctree-l4"><a class="reference internal" href="dreadlocks.thread_level_path_lock.html">thread_level_path_lock</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">thread_level_path_lock</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="../api.html#classes">Classes</a></li>
@@ -81,9 +81,9 @@
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
           <li class="breadcrumb-item"><a href="../api.html">API</a></li>
-      <li class="breadcrumb-item active">path_lock</li>
+      <li class="breadcrumb-item active">thread_level_path_lock</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/api/dreadlocks.path_lock.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/api/dreadlocks.thread_level_path_lock.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -93,19 +93,17 @@
              
 
 
-  <section id="path-lock">
-<h1>path_lock<a class="headerlink" href="#path-lock" title="Link to this heading"></a></h1>
+  <section id="thread-level-path-lock">
+<h1>thread_level_path_lock<a class="headerlink" href="#thread-level-path-lock" title="Link to this heading"></a></h1>
 <dl class="py function">
-<dt class="sig sig-object py" id="dreadlocks.path_lock">
-<span class="sig-prename descclassname"><span class="pre">dreadlocks.</span></span><span class="sig-name descname"><span class="pre">path_lock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shared</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reentrant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreadlocks.path_lock" title="Link to this definition"></a></dt>
-<dd><p>Locks a path both at the thread-level and process-level.</p>
+<dt class="sig sig-object py" id="dreadlocks.thread_level_path_lock">
+<span class="sig-prename descclassname"><span class="pre">dreadlocks.</span></span><span class="sig-name descname"><span class="pre">thread_level_path_lock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shared</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reentrant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreadlocks.thread_level_path_lock" title="Link to this definition"></a></dt>
+<dd><p>Locks a key at the thread-level.</p>
 <section id="parameters">
 <h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
 <dl class="simple">
-<dt>path</dt><dd><p>The path to lock. This path is open in write mode to ensure its
-existence in an atomic way. Cannot be a path to an existing directory.
-The path is normalized so that the underlying file descriptor and
-thread-level lock can be keyed.</p>
+<dt>path</dt><dd><p>The path to lock. The path is normalized so that the underlying lock
+can be keyed.</p>
 </dd>
 <dt>shared</dt><dd><p>Whether the lock is shared. If not shared, the lock is
 exclusive. One can have either no locks, a single exclusive lock,
@@ -130,8 +128,8 @@ recursively. Otherwise, locking recursively results in a dead-lock.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../api.html" class="btn btn-neutral float-left" title="API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="dreadlocks.process_level_path_lock.html" class="btn btn-neutral float-right" title="process_level_path_lock" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="dreadlocks.process_level_path_lock.html" class="btn btn-neutral float-left" title="process_level_path_lock" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dreadlocks.AcquiringLockWouldBlockError.html" class="btn btn-neutral float-right" title="AcquiringLockWouldBlockError" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
@@ -154,20 +152,20 @@ recursively. Otherwise, locking recursively results in a dead-lock.</p>
 <div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
   <span class="rst-current-version" data-toggle="rst-current-version">
     <span class="fa fa-book"> Other Versions</span>
-    v0.0.2
+    docs-add-relevant-links-1
     <span class="fa fa-caret-down"></span>
   </span>
   <div class="rst-other-versions">
     <dl>
       <dt>Tags</dt>
       <dd><a href="../../latest/index.html">latest</a></dd>
-      <dd><a href="dreadlocks.path_lock.html">v0.0.2</a></dd>
     </dl>
     <dl>
       <dt>Branches</dt>
-      <dd><a href="../../main/index.html">main</a></dd>
+      <dd><a href="dreadlocks.thread_level_path_lock.html">docs-add-relevant-links-1</a></dd>
       <dd><a href="../../facilitate-releases-1/index.html">facilitate-releases-1</a></dd>
       <dd><a href="../../increase-python-support-1/index.html">increase-python-support-1</a></dd>
+      <dd><a href="../../main/index.html">main</a></dd>
     </dl>
   </div>
 </div><script>
