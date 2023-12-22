@@ -1,3 +1,5 @@
+from os import getenv
+
 project = 'dreadlocks'
 copyright = '2023, Pid Zwei'
 author = 'Pid Zwei'
@@ -37,5 +39,5 @@ smv_tag_whitelist = r'^v\d+\.\d+\.\d+$|latest'  # all tags of form v*.*.x and la
 smv_branch_whitelist = r'^.*$'
 smv_released_pattern = r'^.*$'
 smv_latest_version = 'v0.0.2'
-smv_remote_whitelist = None
+smv_remote_whitelist = getenv('BUILD_REMOTE_BRANCHES')
 smv_outputdir_format = '{ref.name}'
