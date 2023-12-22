@@ -5,9 +5,13 @@
 > supports thread-level locks, process-level locks, and both simultaneously.
 
 
-## API Documentation
+## Documentation
 
-See [docs](https://techno-solutionist-collective.github.io/dreadlocks/latest).
+See [docs](https://techno-solutionist-collective.github.io/dreadlocks/latest):
+
+  - [Usage](https://techno-solutionist-collective.github.io/dreadlocks/latest/usage)
+  - [API reference](https://techno-solutionist-collective.github.io/dreadlocks/latest/api)
+
 
 
 ## Development
