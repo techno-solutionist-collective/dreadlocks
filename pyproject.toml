@@ -2,7 +2,7 @@
 name = "dreadlocks"
 version = "0.0.2"
 description = "A cross-platform cross-parallelization file-locking software library for Python."
-authors = ["proc-2 <153316008+proc-2@users.noreply.github.com>"]
+authors = ["Pid Zwei <zweipid+dreadlocks@gmail.com>"]
 license = "BSD-2-Clause OR LGPL-3.0-or-later OR GPL-3.0-or-later"
 readme = "README.md"
 
