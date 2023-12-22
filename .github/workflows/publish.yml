@@ -47,4 +47,4 @@ jobs:
         with:
           user: __token__
           password: ${{ env.PYPI_API_TOKEN }}
-          packages_dir: dist/
+          packages-dir: dist/
