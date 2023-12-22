@@ -1,6 +1,6 @@
 {% extends "!page.html" %}
 {% block body %}
-{% if current_version and latest_version and current_version != latest_version and current_version != "latest" %}
+{% if current_version and latest_version and current_version != latest_version and current_version.name != "latest" %}
 <p>
   <strong>
     {% if current_version.is_released %}
