@@ -1,0 +1,6 @@
+thread_level_path_lock
+======================
+
+.. currentmodule:: dreadlocks
+
+.. autofunction:: thread_level_path_lock
