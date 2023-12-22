@@ -1,4 +1,6 @@
 🔒 `dreadlocks`
+![PyPI - Version](https://img.shields.io/pypi/v/dreadlocks?style=flat)
+![Codecov](https://img.shields.io/codecov/c/github/techno-solutionist-collective/dreadlocks?style=flat)
 ==
 
 > A cross-platform file-locking software library for Python that supports
