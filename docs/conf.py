@@ -1,11 +1,25 @@
+import tomllib
 from os import getenv
+from datetime import datetime
+from pathlib import Path
 
-project = 'dreadlocks'
-copyright = '2023, Pid Zwei'
+pyproject_path = Path(__file__).parent.parent.joinpath('pyproject.toml')
+
+with open(pyproject_path, 'rb') as fp:
+    pyproject = tomllib.load(fp)
+
+now = datetime.now()
+
+project = pyproject['tool']['poetry']['name']
 author = 'Pid Zwei'
+copyright = '{}, {}'.format(now.year, author)
 
-release = '0.0'
-version = '0.0.2'
+version = pyproject['tool']['poetry']['version']
+
+def _release(version: str, sep: str = '.'):
+    return sep.join(version.split(sep)[:-1])
+
+release = _release(version)
 
 extensions = [
     'sphinx.ext.duration',
@@ -34,10 +48,10 @@ html_theme = 'sphinx_rtd_theme'
 
 epub_show_urls = 'footnote'
 
-smv_tag_whitelist = r'^v\d+\.\d+\.\d+$|latest'  # all tags of form v*.*.x and latest
+smv_tag_whitelist = r'^v\d+\.\d+\.\d+(-(alpha|beta)\.\d+)$|latest'  # all tags of form v*.*.x and latest
 # Whitelist pattern for branches (set to '' to ignore all branches)
 smv_branch_whitelist = r'^.*$'
-smv_released_pattern = r'^.*$'
-smv_latest_version = 'v0.0.2'
+smv_released_pattern = r'^v\d+\.\d+\.\d+|latest$'
+smv_latest_version = 'v{}'.format(version)
 smv_remote_whitelist = getenv('BUILD_REMOTE_BRANCHES')
 smv_outputdir_format = '{ref.name}'

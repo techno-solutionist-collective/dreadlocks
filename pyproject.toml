@@ -85,9 +85,29 @@ sphinx-multiversion = "^0.2.4"
 sphinx-automodapi = "^0.16.0"
 
 
+[tool.poetry.group.release]
+optional = true
+
+[tool.poetry.group.release.dependencies]
+bump-my-version = "^0.15.3"
+
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.bumpversion]
+current_version = "0.0.2"
+commit = true
+commit_args = "--no-verify"
+message = ":hatching_chick: release: Bump version from v{current_version} to v{new_version}."
+tag = true
+tag_name = "v{new_version}"
+tag_message = "v{new_version}"
+
+[[tool.bumpversion.files]]
+filename = "pyproject.toml"
+key_path = "tool.poetry.version"
 
 [tool.black]
 line-length = 100
