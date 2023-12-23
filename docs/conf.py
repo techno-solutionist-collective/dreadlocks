@@ -1,4 +1,5 @@
 import tomllib
+import re
 from os import getenv
 from datetime import datetime
 from pathlib import Path
@@ -11,7 +12,15 @@ with open(pyproject_path, 'rb') as fp:
 now = datetime.now()
 
 project = pyproject['tool']['poetry']['name']
-author = 'Pid Zwei'
+
+author_re = re.compile(r'^(\w+(?: \w+)*)(?: \(([^)]+)\))?(?: <([^>]+)>)?$')
+
+author = ', '.join(
+    map(
+        lambda author: author_re.search(author).group(1),
+        pyproject['tool']['poetry']['authors']
+    )
+)
 copyright = '{}, {}'.format(now.year, author)
 
 release = pyproject['tool']['poetry']['version']
