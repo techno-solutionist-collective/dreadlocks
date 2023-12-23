@@ -48,7 +48,7 @@ html_theme = 'sphinx_rtd_theme'
 
 epub_show_urls = 'footnote'
 
-smv_tag_whitelist = r'^v\d+\.\d+\.\d+(-(alpha|beta)\.\d+)$|latest'  # all tags of form v*.*.x and latest
+smv_tag_whitelist = r'^v\d+\.\d+\.\d+(-(alpha|beta)\.\d+)?$|latest'  # all tags of form v*.*.x and latest
 # Whitelist pattern for branches (set to '' to ignore all branches)
 smv_branch_whitelist = getenv('BUILD_BRANCHES', r'^.*$')
 smv_released_pattern = r'^v\d+\.\d+\.\d+|latest$'
