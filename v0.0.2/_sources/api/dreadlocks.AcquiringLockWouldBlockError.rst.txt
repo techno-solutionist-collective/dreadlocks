@@ -1,0 +1,6 @@
+AcquiringLockWouldBlockError
+============================
+
+.. currentmodule:: dreadlocks
+
+.. autoexception:: AcquiringLockWouldBlockError

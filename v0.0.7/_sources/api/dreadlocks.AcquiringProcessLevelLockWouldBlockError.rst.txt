@@ -1,0 +1,6 @@
+AcquiringProcessLevelLockWouldBlockError
+========================================
+
+.. currentmodule:: dreadlocks
+
+.. autoexception:: AcquiringProcessLevelLockWouldBlockError
