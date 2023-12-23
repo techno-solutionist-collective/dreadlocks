@@ -25,14 +25,24 @@ jobs:
     runs-on: ${{ matrix.platform }}
 
     env:
-      PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
+      TAG_NAME: ${{ github.ref_name }}
 
     steps:
 
       - uses: actions/checkout@v4
 
-      - name: Abort if not on main branch
-        if: github.event.base_ref != 'refs/heads/main'
+      - name: Find matching release branch
+        run: >
+          {
+            printf '%s' 'MATCHING_RELEASE_BRANCH=' ;
+            git branch -r --contains ${{ env.TAG_NAME }} --format '%(refname)' |
+            grep -qE '^refs/remotes/origin/(main|release-${{ env.TAG_NAME }})$' |
+            head -n1 ;
+          }
+          >> "$GITHUB_ENV"
+
+      - name: Abort if tag is not on release branch
+        if: env.MATCHING_RELEASE_BRANCH == ''
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -55,6 +65,8 @@ jobs:
 
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
+        env:
+          PYPI_API_TOKEN: ${{ secrets.PYPI_API_TOKEN }}
         with:
           user: __token__
           password: ${{ env.PYPI_API_TOKEN }}
