@@ -6,3 +6,7 @@ updates:
       interval: "daily"
       time: "01:00"
     open-pull-requests-limit: 20
+    commit-message:
+      prefix: ":arrow_up: deps"
+      prefix-development: ":arrow_up: build(deps-dev)"
+      include: "scope"
