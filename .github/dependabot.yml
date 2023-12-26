@@ -8,5 +8,5 @@ updates:
     open-pull-requests-limit: 20
     commit-message:
       prefix: ":arrow_up: deps"
-      prefix-development: ":arrow_up: build(deps-dev)"
+      prefix-development: ":arrow_up: build"
       include: "scope"
