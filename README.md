@@ -9,7 +9,7 @@
 
 ## 📚 Documentation
 
-See [docs](https://techno-solutionist-collective.github.io/dreadlocks/latest):
+See [GitHub pages](https://techno-solutionist-collective.github.io/dreadlocks/latest):
 
   - [Usage](https://techno-solutionist-collective.github.io/dreadlocks/latest/usage)
   - [API reference](https://techno-solutionist-collective.github.io/dreadlocks/latest/api)
