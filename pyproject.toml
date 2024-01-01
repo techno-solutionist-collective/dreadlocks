@@ -1,7 +1,7 @@
 [tool]
 [tool.poetry]
 name = "dreadlocks"
-version = "0.0.11"
+version = "0.0.14"
 description = "A cross-platform cross-parallelization file-locking software library for Python."
 authors = ["Pid Zwei <zweipid+dreadlocks@gmail.com>"]
 license = "BSD-2-Clause OR LGPL-3.0-or-later OR GPL-3.0-or-later"
@@ -95,7 +95,7 @@ bump-my-version = "^0.15.3"
 
 
 [tool.bumpversion]
-current_version = "0.0.11"
+current_version = "0.0.14"
 commit = true
 commit_args = "--no-verify"
 message = ":hatching_chick: release: Bump version from v{current_version} to v{new_version}."
@@ -106,6 +106,7 @@ tag_message = "v{new_version}"
 [[tool.bumpversion.files]]
 filename = "pyproject.toml"
 key_path = "tool.poetry.version"
+
 
 
 
@@ -128,6 +129,7 @@ testpaths = ["src"]
 python_files = "*-test.py"
 python_classes = "Test"
 python_functions = "test_*"
+
 
 
 
