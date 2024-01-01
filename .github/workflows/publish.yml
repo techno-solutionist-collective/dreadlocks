@@ -30,13 +30,16 @@ jobs:
     steps:
 
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
 
       - name: Find matching release branch
         run: >
           {
             printf '%s' 'MATCHING_RELEASE_BRANCH=' ;
             git branch -r --contains ${{ env.TAG_NAME }} --format '%(refname)' |
-            grep -qE '^refs/remotes/origin/(main|release-${{ env.TAG_NAME }})$' |
+            grep -E '^refs/remotes/origin/(main|release-${{ env.TAG_NAME }})$' |
             head -n1 ;
           }
           >> "$GITHUB_ENV"
