@@ -1,6 +1,0 @@
-RecursiveDeadlockError
-======================
-
-.. currentmodule:: dreadlocks
-
-.. autoexception:: RecursiveDeadlockError
