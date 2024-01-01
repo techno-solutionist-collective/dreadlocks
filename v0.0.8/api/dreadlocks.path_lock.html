@@ -37,9 +37,6 @@
           <a href="../index.html" class="icon icon-home">
             dreadlocks
           </a>
-              <div class="version">
-                0.0
-              </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
@@ -97,30 +94,27 @@
 <h1>path_lock<a class="headerlink" href="#path-lock" title="Link to this heading"></a></h1>
 <dl class="py function">
 <dt class="sig sig-object py" id="dreadlocks.path_lock">
-<span class="sig-prename descclassname"><span class="pre">dreadlocks.</span></span><span class="sig-name descname"><span class="pre">path_lock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shared</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reentrant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#dreadlocks.path_lock" title="Link to this definition"></a></dt>
+<span class="sig-prename descclassname"><span class="pre">dreadlocks.</span></span><span class="sig-name descname"><span class="pre">path_lock</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">path</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.12)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">shared</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">blocking</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">reentrant</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.12)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/dreadlocks/path_lock.html#path_lock"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#dreadlocks.path_lock" title="Link to this definition"></a></dt>
 <dd><p>Locks a path both at the thread-level and process-level.</p>
-<section id="parameters">
-<h2>Parameters<a class="headerlink" href="#parameters" title="Link to this heading"></a></h2>
-<dl class="simple">
-<dt>path</dt><dd><p>The path to lock. This path is open in write mode to ensure its
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> – The path to lock. This path is open in write mode to ensure its
 existence in an atomic way. Cannot be a path to an existing directory.
 The path is normalized so that the underlying file descriptor and
-thread-level lock can be keyed.</p>
-</dd>
-<dt>shared</dt><dd><p>Whether the lock is shared. If not shared, the lock is
+thread-level lock can be keyed.</p></li>
+<li><p><strong>shared</strong> – Whether the lock is shared. If not shared, the lock is
 exclusive. One can have either no locks, a single exclusive lock,
 or any positive number of shared locks on the same resource at any given
-time.</p>
-</dd>
-<dt>blocking</dt><dd><p>Whether lock acquisition is blocking. If True, will raise an
+time.</p></li>
+<li><p><strong>blocking</strong> – Whether lock acquisition is blocking. If True, will raise an
 error if a lock cannot be acquired immediately. Otherwise, will block
-until the lock is acquired.</p>
-</dd>
-<dt>reentrant</dt><dd><p>Whether lock acquisition is reentrant. If True, allows to lock
-recursively. Otherwise, locking recursively results in a dead-lock.</p>
+until the lock is acquired.</p></li>
+<li><p><strong>reentrant</strong> – Whether lock acquisition is reentrant. If True, allows to lock
+recursively. Otherwise, locking recursively results in a dead-lock.</p></li>
+</ul>
 </dd>
 </dl>
-</section>
 </dd></dl>
 
 </section>
@@ -171,6 +165,10 @@ recursively. Otherwise, locking recursively results in a dead-lock.</p>
       <dd><a href="../../v0.0.2/index.html">v0.0.2</a></dd>
       <dd><a href="dreadlocks.path_lock.html">v0.0.8</a></dd>
       <dd><a href="../../v0.0.9/index.html">v0.0.9</a></dd>
+    </dl>
+    <dl>
+      <dt>Branches</dt>
+      <dd><a href="../../main/index.html">main</a></dd>
     </dl>
   </div>
 </div><script>
