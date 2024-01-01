@@ -55,6 +55,10 @@ templates_path = [
 
 html_theme = 'sphinx_rtd_theme'
 
+html_theme_options = {
+    'display_version': False,
+}
+
 epub_show_urls = 'footnote'
 
 smv_tag_whitelist = r'^(v\d+\.\d+\.\d+(-(alpha|beta|rc)\.\d+)?|latest)$'  # all tags of form v*.*.x and latest
