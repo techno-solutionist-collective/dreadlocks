@@ -3,6 +3,27 @@ import re
 from os import getenv
 from datetime import datetime
 from pathlib import Path
+from subprocess import Popen, PIPE
+
+branch_lines = Popen(['git', 'branch'], stdout=PIPE).stdout
+
+assert branch_lines is not None
+
+checked_out_line = next(
+    filter(
+        lambda line: line.startswith('* '),
+        map(lambda line: line.decode(), branch_lines)
+    )
+)
+
+checked_out = checked_out_line[2:-1]
+
+detached_head_re = re.compile(r'^\(HEAD detached at (.*)\)$')
+
+if (m := detached_head_re.search(checked_out)) is not None:
+    version = m.group(1)
+else:
+    version = checked_out
 
 pyproject_path = Path(__file__).parent.parent.joinpath('pyproject.toml')
 
@@ -24,11 +45,6 @@ author = ', '.join(
 copyright = '{}, {}'.format(now.year, author)
 
 release = pyproject['tool']['poetry']['version']
-
-def _version(release: str, sep: str = '.'):
-    return sep.join(release.split(sep)[:2])
-
-version = _version(release)
 
 extensions = [
     'sphinx.ext.duration',
