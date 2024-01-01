@@ -1,0 +1,6 @@
+AcquiringThreadLevelLockWouldBlockError
+=======================================
+
+.. currentmodule:: dreadlocks
+
+.. autoexception:: AcquiringThreadLevelLockWouldBlockError
