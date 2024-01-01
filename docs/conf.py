@@ -63,3 +63,8 @@ smv_branch_whitelist = getenv('BUILD_BRANCHES', r'^.*$')
 smv_released_pattern = r'^(refs/tags/(v\d+\.\d+\.\d+|latest))$'
 smv_remote_whitelist = getenv('BUILD_REMOTE_BRANCHES')
 smv_outputdir_format = '{ref.name}'
+
+if __name__ == '__main__':
+    import pprint
+    pp = pprint.PrettyPrinter(indent=2)
+    pp.pprint(vars())
