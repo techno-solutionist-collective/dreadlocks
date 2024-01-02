@@ -12,7 +12,18 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
   cancel-in-progress: true
 
+env:
+  TYPE_CHECKED_PYTHON_VERSIONS: ${{ contains(fromJSON('["pull_request"]'), github.event_name) && '["3.9"]' || '["3.9", "3.10", "3.11", "3.12"]' }}
+
 jobs:
+
+  python-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      type-checked: ${{ env.TYPE_CHECKED_PYTHON_VERSIONS }}
+    steps:
+      - run: true
+
 
   lock-file:
 
@@ -169,12 +180,14 @@ jobs:
 
 
   type-check:
+
+    needs: python-versions
+
     strategy:
       matrix:
         platform:
           - ubuntu-latest
-        python-version:
-          - '3.9'
+        python-version: ${{ fromJSON(needs.python-versions.outputs.type-checked) }}
 
     runs-on: ${{ matrix.platform }}
 
