@@ -13,6 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
+  TESTED_PYTHON_VERSIONS: ${{ contains(fromJSON('["pull_request"]'), github.event_name) && '["3.9", "3.12"]' || '["3.9", "3.10", "3.11", "3.12"]' }}
   TYPE_CHECKED_PYTHON_VERSIONS: ${{ contains(fromJSON('["pull_request"]'), github.event_name) && '["3.9"]' || '["3.9", "3.10", "3.11", "3.12"]' }}
 
 jobs:
@@ -20,6 +21,7 @@ jobs:
   python-versions:
     runs-on: ubuntu-latest
     outputs:
+      tested: ${{ env.TESTED_PYTHON_VERSIONS }}
       type-checked: ${{ env.TYPE_CHECKED_PYTHON_VERSIONS }}
     steps:
       - run: true
@@ -50,20 +52,18 @@ jobs:
 
   unit:
 
+    needs: python-versions
+
     strategy:
       matrix:
         platform:
           - ubuntu-latest
           - windows-latest
           - macos-latest
-        python-version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
+        python-version: ${{ fromJSON(needs.python-versions.outputs.tested) }}
         include:
           - tox-env: 'unit'
-          - python-version: '3.9'
+          - python-version: ${{ fromJSON(needs.python-versions.outputs.tested)[0] }}
             tox-env: ${{ github.actor != 'dependabot[bot]' && 'unit-cover' || 'unit' }}
 
     runs-on: ${{ matrix.platform }}
@@ -92,20 +92,18 @@ jobs:
 
   doctest:
 
+    needs: python-versions
+
     strategy:
       matrix:
         platform:
           - ubuntu-latest
           - windows-latest
           - macos-latest
-        python-version:
-          - '3.9'
-          - '3.10'
-          - '3.11'
-          - '3.12'
+        python-version: ${{ fromJSON(needs.python-versions.outputs.tested) }}
         include:
           - tox-env: 'doctest'
-          - python-version: '3.9'
+          - python-version: ${{ fromJSON(needs.python-versions.outputs.tested)[0] }}
             tox-env: ${{ github.actor != 'dependabot[bot]' && 'doctest-cover' || 'doctest' }}
 
     runs-on: ${{ matrix.platform }}
