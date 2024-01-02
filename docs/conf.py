@@ -67,6 +67,7 @@ smv_tag_whitelist = r'^(v\d+\.\d+\.\d+(-(alpha|beta|rc)\.\d+)?|latest)$'  # all 
 # Whitelist pattern for branches (set to '' to ignore all branches)
 smv_branch_whitelist = getenv('BUILD_BRANCHES', r'^.*$')
 smv_released_pattern = r'^(refs/tags/(v\d+\.\d+\.\d+|latest))$'
+smv_latest_version = 'v{}'.format(release)
 smv_remote_whitelist = getenv('BUILD_REMOTE_BRANCHES')
 smv_outputdir_format = '{ref.name}'
 
