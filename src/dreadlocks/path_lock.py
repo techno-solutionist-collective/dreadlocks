@@ -1,13 +1,13 @@
 from contextlib import contextmanager
 from os.path import normpath
 
+from .errors import AcquiringProcessLevelLockWouldBlockError
 from .thread_level_lock import thread_level_lock
 from .process_level_path_lock import (
     _process_level_path_lock,  # type: ignore [reportPrivateUsage]
 )
 
 
-@contextmanager
 def path_lock(
     path: str, shared: bool = False, blocking: bool = True, reentrant: bool = False
 ):
@@ -34,8 +34,33 @@ def path_lock(
         recursively. Otherwise, locking recursively results in a dead-lock.
     """
     normalized_path = normpath(path)
-    with thread_level_lock(normalized_path, shared, blocking, reentrant):
-        with _process_level_path_lock(
-            normalized_path, shared, blocking, reentrant
-        ) as fd:
+
+    if blocking:
+        return _path_lock_blocking(normalized_path, shared, reentrant)
+    else:
+        return _path_lock_nonblocking(normalized_path, shared, reentrant)
+
+
+@contextmanager
+def _path_lock_blocking(normalized_path: str, shared: bool, reentrant: bool):
+    while True:
+        with thread_level_lock(normalized_path, shared, True, reentrant):
+            try:
+                with _process_level_path_lock(
+                    normalized_path, shared, False, reentrant
+                ) as fd:
+                    yield fd
+                    break
+
+            except AcquiringProcessLevelLockWouldBlockError:
+                pass
+
+        with _process_level_path_lock(normalized_path, shared, True, reentrant) as fd:
+            pass
+
+
+@contextmanager
+def _path_lock_nonblocking(normalized_path: str, shared: bool, reentrant: bool):
+    with thread_level_lock(normalized_path, shared, False, reentrant):
+        with _process_level_path_lock(normalized_path, shared, False, reentrant) as fd:
             yield fd
