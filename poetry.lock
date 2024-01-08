@@ -102,13 +102,13 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "bump-my-version"
-version = "0.15.4"
+version = "0.16.1"
 description = "Version bump your Python project"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "bump-my-version-0.15.4.tar.gz", hash = "sha256:94e498a04957839d75f63164c4c419836073f5846b0b8b141c18302f09cc219a"},
-    {file = "bump_my_version-0.15.4-py3-none-any.whl", hash = "sha256:a8b2aab492f5bbb45a132fa167c949b9f9555817a7e52c325717ff7c138efcef"},
+    {file = "bump-my-version-0.16.1.tar.gz", hash = "sha256:a2ad09946c226db4465cbba4ae97f72b4f83484e7d0712fdef465623a83e7599"},
+    {file = "bump_my_version-0.16.1-py3-none-any.whl", hash = "sha256:571d294357db7f20299a2c59aa44a3ba498d92767e79f9a641565606c628803b"},
 ]
 
 [package.dependencies]
@@ -1676,4 +1676,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "7bb346dd3d1c69645cf0fa108fdf1bb20a987434a83b088e9859478045507ff0"
+content-hash = "2069d83a060c455649a2d478dc8572b55f21e0d2e17e3a1836d156da619ea29a"
