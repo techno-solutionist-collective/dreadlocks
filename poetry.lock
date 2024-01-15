@@ -102,18 +102,17 @@ uvloop = ["uvloop (>=0.15.2)"]
 
 [[package]]
 name = "bump-my-version"
-version = "0.15.4"
+version = "0.16.2"
 description = "Version bump your Python project"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "bump-my-version-0.15.4.tar.gz", hash = "sha256:94e498a04957839d75f63164c4c419836073f5846b0b8b141c18302f09cc219a"},
-    {file = "bump_my_version-0.15.4-py3-none-any.whl", hash = "sha256:a8b2aab492f5bbb45a132fa167c949b9f9555817a7e52c325717ff7c138efcef"},
+    {file = "bump-my-version-0.16.2.tar.gz", hash = "sha256:966dfc6cf9765a1d4a48fbaeb587a2e3a70ed5c13b04b5ee10c6e0134d4b8342"},
+    {file = "bump_my_version-0.16.2-py3-none-any.whl", hash = "sha256:83820caf4f64465c674f41346a2135999d7c3359c35e42a67708cb957c5135be"},
 ]
 
 [package.dependencies]
 click = "*"
-dotted-notation = "*"
 pydantic = ">=2.0.0"
 pydantic-settings = "*"
 rich = "*"
@@ -381,19 +380,6 @@ files = [
     {file = "docutils-0.20.1-py3-none-any.whl", hash = "sha256:96f387a2c5562db4476f09f13bbab2192e764cac08ebbf3a34a95d9b1e4a59d6"},
     {file = "docutils-0.20.1.tar.gz", hash = "sha256:f08a4e276c3a1583a86dce3e34aba3fe04d02bba2dd51ed16106244e8a923e3b"},
 ]
-
-[[package]]
-name = "dotted-notation"
-version = "0.11.0"
-description = "Dotted notation parser with pattern matching"
-optional = false
-python-versions = ">=3.6"
-files = [
-    {file = "dotted-notation-0.11.0.tar.gz", hash = "sha256:e1a214cb236cd647e56c79108e8eca2a50a635b7196077eab211869d9a93b0ed"},
-]
-
-[package.dependencies]
-pyparsing = ">=2.4"
 
 [[package]]
 name = "exceptiongroup"
@@ -966,20 +952,6 @@ files = [
 [package.extras]
 plugins = ["importlib-metadata"]
 windows-terminal = ["colorama (>=0.4.6)"]
-
-[[package]]
-name = "pyparsing"
-version = "3.1.1"
-description = "pyparsing module - Classes and methods to define and execute parsing grammars"
-optional = false
-python-versions = ">=3.6.8"
-files = [
-    {file = "pyparsing-3.1.1-py3-none-any.whl", hash = "sha256:32c7c0b711493c72ff18a981d24f28aaf9c1fb7ed5e9667c9e84e3db623bdbfb"},
-    {file = "pyparsing-3.1.1.tar.gz", hash = "sha256:ede28a1a32462f5a9705e07aea48001a08f7cf81a021585011deba701581a0db"},
-]
-
-[package.extras]
-diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
 name = "pyproject-api"
@@ -1676,4 +1648,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "7bb346dd3d1c69645cf0fa108fdf1bb20a987434a83b088e9859478045507ff0"
+content-hash = "2069d83a060c455649a2d478dc8572b55f21e0d2e17e3a1836d156da619ea29a"
