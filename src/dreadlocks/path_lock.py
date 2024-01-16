@@ -53,9 +53,11 @@ def _path_lock_blocking(normalized_path: str, shared: bool, reentrant: bool):
                     break
 
             except AcquiringProcessLevelLockWouldBlockError:
+                # print("ABORT")
                 pass
 
         with _process_level_path_lock(normalized_path, shared, True, reentrant) as fd:
+            # print("WILL TRY AGAIN")
             pass
 
 

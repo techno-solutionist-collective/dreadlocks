@@ -27,7 +27,7 @@ For that run:
 make i
 ```
 
-All other environments are managed by `tox` (and uses `poetry` internally).
+All other environments are managed by `tox` (which uses `poetry` internally).
 
 
 ### 🪝 Local git hooks
