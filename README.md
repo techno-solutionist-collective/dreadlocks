@@ -27,7 +27,7 @@ For that run:
 poetry install --only dev
 ```
 
-All other environments are managed by `tox` (and uses `poetry` internally).
+All other environments are managed by `tox` (which uses `poetry` internally).
 
 
 ### 👕 Lint
