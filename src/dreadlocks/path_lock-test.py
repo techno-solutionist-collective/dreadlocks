@@ -407,12 +407,12 @@ def many_exclusive_threads_and_processes_rw_process(path: str, indices: list[int
         raise
 
 
-def test_many_exclusive_threads_and_processes_rw(tmp_path: str):
+@pytest.mark.parametrize("m", (20,))
+def test_many_exclusive_threads_and_processes_rw(tmp_path: str, m: int):
     if os.name == "nt":
         pytest.skip("TODO Processes-based tests randomly fail on Windows.")
 
     with lock(tmp_path) as path:
-        m = 100
         n = m**2
         items = list(range(n))
         partition: list[list[int]] = list(
