@@ -1,0 +1,6 @@
+path_lock
+=========
+
+.. currentmodule:: dreadlocks
+
+.. autofunction:: path_lock
