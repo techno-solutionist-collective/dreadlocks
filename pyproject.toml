@@ -21,7 +21,7 @@ optional = true
 
 [tool.poetry.group.lint.dependencies]
 ruff = ">=0.1.9,<0.3.0"
-black = "^23.9.1"
+black = ">=23.9.1,<25.0.0"
 
 
 [tool.poetry.group.type]
