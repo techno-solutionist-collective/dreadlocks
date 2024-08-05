@@ -73,7 +73,7 @@ coverage = "^7.3.4"
 optional = true
 
 [tool.poetry.group.licenses.dependencies]
-pip-licenses = "^4.3.3"
+pip-licenses = ">=4.3.3,<6.0.0"
 
 
 [tool.poetry.group.docs]
