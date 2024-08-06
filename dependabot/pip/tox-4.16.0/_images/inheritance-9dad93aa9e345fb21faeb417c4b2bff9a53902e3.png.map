@@ -1,0 +1,6 @@
+<map id="inheritance029b119142" name="inheritance029b119142">
+<area shape="rect" id="node1" href="api/dreadlocks.AcquiringLockWouldBlockError.html#dreadlocks.AcquiringLockWouldBlockError" target="_top" title="Raised when acquiring lock would block and blocking is False" alt="" coords="5,55,225,80"/>
+<area shape="rect" id="node2" href="api/dreadlocks.AcquiringProcessLevelLockWouldBlockError.html#dreadlocks.AcquiringProcessLevelLockWouldBlockError" target="_top" title="Raised when acquiring a process&#45;level lock would block and blocking is False" alt="" coords="273,29,579,55"/>
+<area shape="rect" id="node3" href="api/dreadlocks.AcquiringThreadLevelLockWouldBlockError.html#dreadlocks.AcquiringThreadLevelLockWouldBlockError" target="_top" title="Raised when acquiring a thread&#45;level lock would block and blocking is False" alt="" coords="276,79,576,104"/>
+<area shape="rect" id="node4" href="api/dreadlocks.RecursiveDeadlockError.html#dreadlocks.RecursiveDeadlockError" target="_top" title="Raised when recursive dead&#45;lock is detected." alt="" coords="26,5,205,31"/>
+</map>
