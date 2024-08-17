@@ -61,7 +61,7 @@ jobs:
           poetry build
 
       - name: Wait for CI checks workflow to succeed
-        uses: ArcticLampyrid/action-wait-for-workflow@v1.0.1
+        uses: ArcticLampyrid/action-wait-for-workflow@v1.2.0
         with:
           workflow: ci.yml
           sha: ${{ github.sha }}
