@@ -65,7 +65,7 @@ jobs:
           sha: ${{ github.sha }}
 
       - name: Publish docs to GitHub pages
-        uses: JamesIves/github-pages-deploy-action@v4.5.0
+        uses: JamesIves/github-pages-deploy-action@v4.6.3
         with:
           repository-name: techno-solutionist-collective/dreadlocks-docs
           token: ${{ secrets.DOCS_PUBLISH_TOKEN }}
