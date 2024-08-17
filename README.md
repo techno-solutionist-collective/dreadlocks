@@ -24,10 +24,29 @@ The only external requirements are Python and `poetry`.
 For that run:
 
 ```sh
-poetry install --only dev
+make i
 ```
 
 All other environments are managed by `tox` (and uses `poetry` internally).
+
+
+### 🪝 Local git hooks
+
+To enable local `git` hooks, run
+
+```sh
+make install-git-hooks
+```
+
+
+### 📦 Dependencies
+
+Manage dependencies with `poetry {add,remove} [-G <group>] ...`. Update the
+lock file with
+
+```sh
+make lock
+```
 
 
 ### 👕 Lint
@@ -52,7 +71,7 @@ poetry run tox -e type-check
 > :information_source: Add the `-cover` suffix to generate coverage
 > information.
 
-#### 📦 Unit tests
+#### 🔬 Unit tests
 
 ```sh
 poetry run tox -e unit
