@@ -67,5 +67,7 @@ jobs:
       - name: Publish docs to GitHub pages
         uses: JamesIves/github-pages-deploy-action@v4.5.0
         with:
+          repository-name: techno-solutionist-collective/dreadlocks-docs
+          token: ${{ secrets.DOCS_PUBLISH_TOKEN }}
           branch: gh-pages
           folder: build/docs
