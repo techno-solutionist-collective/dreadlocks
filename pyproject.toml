@@ -39,6 +39,13 @@ pytest-asyncio = "^0.23.2"
 pytest-xdist = "^3.3.1"
 
 
+[tool.poetry.group.test-watch]
+optional = true
+
+[tool.poetry.group.test-watch.dependencies]
+pytest-watcher = "^0.4.2"
+
+
 [tool.poetry.group.cover]
 optional = true
 
