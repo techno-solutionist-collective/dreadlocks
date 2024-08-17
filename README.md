@@ -52,17 +52,17 @@ make lock
 ### 👕 Lint
 
 ```sh
-poetry run tox -e lint-check
+./s lint-check
 ```
 
 > :information_source: Some linting errors can be automatically fixed with
-> `poetry run tox -e lint`.
+> `./s lint`.
 
 
 ### ☑️ Type check
 
 ```sh
-poetry run tox -e type-check
+./s type-check
 ```
 
 
@@ -74,28 +74,28 @@ poetry run tox -e type-check
 #### 🔬 Unit tests
 
 ```sh
-poetry run tox -e unit
+./s unit
 ```
 
 #### 📑 Doctests
 
 ```sh
-poetry run tox -e doctest
+./s doctest
 ```
 
 
 #### ☔ Coverage
 
 If tests have been run with the `-cover` suffix, coverage reports can be
-generated with `poetry run tox -e coverage`.
+generated with `./s coverage`.
 
-The HTML coverage report can be served to port `8000` with `poetry run tox -e
+The HTML coverage report can be served to port `8000` with `./s
 coverage-serve`.
 
 
 ### 📜 Dependencies licenses
 
-Dependencies licenses can be checked with `poetry run tox -e licenses`.
+Dependencies licenses can be checked with `./s licenses`.
 
 
 ### ⚖️ Licensing
