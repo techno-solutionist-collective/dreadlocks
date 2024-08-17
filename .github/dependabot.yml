@@ -5,6 +5,10 @@ updates:
     schedule:
       interval: "daily"
       time: "01:00"
+    commit-message:
+      prefix: ":arrow_up: deps"
+      prefix-development: ":arrow_up: build"
+      include: "scope"
 
   - package-ecosystem: "pip"
     directory: "/"
