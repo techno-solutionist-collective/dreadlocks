@@ -1,3 +1,4 @@
+# import traceback
 import json
 import os
 import time
@@ -113,9 +114,13 @@ def lock(directory: str):
 
 
 def lock_first(is_locked: Barrier, is_done: Barrier, path: str, shared: bool):
+    # print("CALL", "lock_first", path, shared)
     with path_lock(path, shared=shared, blocking=False):
+        # print("ENTER", "lock_first", path, shared)
         is_locked.wait()
+        # print("WAIT", "lock_first", path, shared)
         is_done.wait()
+        # print("DONE", "lock_first", path, shared)
 
 
 def lock_rest(
@@ -125,10 +130,15 @@ def lock_rest(
     shared: bool,
     blocking: bool,
 ):
+    # print("CALL", "lock_rest", path, shared, blocking)
     is_locked.wait()
+    # print("WITH", "lock_rest", path, shared, blocking)
     with path_lock(path, shared=shared, blocking=blocking):
+        # print("ENTER", "lock_rest", path, shared, blocking)
         if is_done is not None and shared:
+            # print("WAIT", "lock_rest", path, shared, blocking)
             is_done.wait()
+            # print("DONE", "lock_rest", path, shared, blocking)
 
 
 @pytest.mark.parametrize(
@@ -363,33 +373,46 @@ def test_reentrant_mixed(tmp_path: str, shared: list[bool]):
 
 
 def exclusive_thread_write(path: str, i: int):
-    with path_lock(path, shared=False) as fd:
-        try:
-            with open(fd, closefd=False) as fp:
-                fp.seek(0)
-                done: list[int] = json.load(fp)
-        except json.decoder.JSONDecodeError:
-            done: list[int] = []
+    try:
+        with path_lock(path, shared=False) as fd:
+            # print('reading {}'.format(i))
+            try:
+                with open(fd, closefd=False) as fp:
+                    fp.seek(0)
+                    done: list[int] = json.load(fp)
+            except json.decoder.JSONDecodeError:
+                done: list[int] = []
 
-        done.append(i)
-        with open(fd, "w", closefd=False) as fp:
-            fp.seek(0)
-            fp.truncate(0)
-            json.dump(done, fp)
-            fp.seek(0)
+            done.append(i)
+            # print('adding {}'.format(i))
+            with open(fd, "w", closefd=False) as fp:
+                fp.seek(0)
+                fp.truncate(0)
+                json.dump(done, fp)
+                fp.seek(0)
+            # print('done {}'.format(i))
+    except Exception:
+        # print(e)
+        # print(traceback.format_exc())
+        raise
 
 
 def many_exclusive_threads_and_processes_rw_process(path: str, indices: list[int]):
-    with ThreadPoolExecutor(max_workers=len(indices)) as executor:
-        executor.map(exclusive_thread_write, [path] * len(indices), indices)
+    try:
+        with ThreadPoolExecutor(max_workers=len(indices)) as executor:
+            executor.map(exclusive_thread_write, [path] * len(indices), indices)
+    except Exception:
+        # print(e)
+        # print(traceback.format_exc())
+        raise
 
 
-def test_many_exclusive_threads_and_processes_rw(tmp_path: str):
+@pytest.mark.parametrize("m", (20,))
+def test_many_exclusive_threads_and_processes_rw(tmp_path: str, m: int):
     if os.name == "nt":
         pytest.skip("TODO Processes-based tests randomly fail on Windows.")
 
     with lock(tmp_path) as path:
-        m = 10
         n = m**2
         items = list(range(n))
         partition: list[list[int]] = list(
@@ -619,3 +642,50 @@ def test_synchronized_reads_blocking(tmp_path: str, parallelization: Paralleliza
                 # NOTE: check nobody else wrote to file while we held the lock
                 assert message["id"] == message["contents"]["id"]
                 assert message["contents"]["copy"] == message["contents"]["counter"]
+
+
+@pytest.mark.parametrize("n_shared", (1, 5))
+@pytest.mark.parametrize("n_exclusive", (1, 5))
+def test_blocking_processes_and_threads(tmp_path: str, n_shared: int, n_exclusive: int):
+    """
+    Process B spawns 1 thread that acquires a shared lock.
+    Process A spawns m threads that acquire a shared lock and n threads that
+    acquire an exclusive lock.
+    Process B waits on communication from all threads of process A with a
+    shared lock.
+    The concurrent exclusive locks should not result in a dead lock.
+    """
+    if os.name == "nt":
+        pytest.skip("TODO Processes-based tests randomly fail on Windows.")
+
+    with lock(tmp_path) as path:
+        with processes(2) as (executor, m):
+            is_locked = m.Barrier(1 + n_shared + n_exclusive)
+            is_done = m.Barrier(1 + n_shared)
+
+            t1 = executor.submit(lock_first, is_locked, is_done, path, True)
+
+            shared = [(is_locked, is_done, path, True, True)] * n_shared
+            exclusive = [(is_locked, None, path, False, True)] * n_exclusive
+            parameters = shared + exclusive
+
+            t2 = executor.submit(
+                locked_threads,
+                lock_rest,
+                parameters,
+                is_done,
+            )
+
+            t1.result()
+
+            t2.result()
+
+
+"""
+And vice versa, if one
+thread of process A acquires an exclusive lock at the process-level first,
+then attempts to exclusively acquire the thread-level lock, that
+thread-level lock may already be acquired as shared by other threads of
+process A, but they are waiting on a thread of process B that is in turn
+waiting for the process-level lock to be downgraded to shared.
+"""
