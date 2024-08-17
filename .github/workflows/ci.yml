@@ -80,7 +80,7 @@ jobs:
         shell: bash
         run: poetry run tox -e ${{ matrix.tox-env }}
 
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         if: matrix.tox-env == 'unit-cover'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
@@ -120,7 +120,7 @@ jobs:
         shell: bash
         run: poetry run tox -e ${{ matrix.tox-env }}
 
-      - uses: codecov/codecov-action@v3
+      - uses: codecov/codecov-action@v4
         if: matrix.tox-env == 'doctest-cover'
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
