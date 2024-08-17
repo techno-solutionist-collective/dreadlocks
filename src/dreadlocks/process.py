@@ -16,7 +16,9 @@ class ShareableProcessLock:
         self._exclusively_held_by: Counter[int] = Counter()
 
     @contextmanager
-    def lock(self, shared: bool = False, blocking: bool = True, reentrant: bool = False):
+    def lock(
+        self, shared: bool = False, blocking: bool = True, reentrant: bool = False
+    ):
         """Locks the scoped FD
 
         shared : bool

@@ -15,7 +15,18 @@ from pathlib import Path
 from queue import Queue
 from random import random
 from threading import Barrier
-from typing import Any, TypeVar, Callable, Optional, Type, Protocol, cast, TypedDict, Union, Literal
+from typing import (
+    Any,
+    TypeVar,
+    Callable,
+    Optional,
+    Type,
+    Protocol,
+    cast,
+    TypedDict,
+    Union,
+    Literal,
+)
 
 import pytest
 
@@ -57,11 +68,9 @@ class Manager(Protocol):
         parties: int,
         action: Optional[Callable[[], None]] = None,
         timeout: Optional[int] = None,
-    ) -> Barrier:
-        ...
+    ) -> Barrier: ...
 
-    def Queue(self, maxsize: int = 0) -> Queue[Any]:
-        ...
+    def Queue(self, maxsize: int = 0) -> Queue[Any]: ...
 
 
 class SimpleThreadManager:
@@ -78,8 +87,7 @@ class SimpleThreadManager:
 
 
 class Parallelization(Protocol):
-    def __call__(self, n: int) -> AbstractContextManager[tuple[Executor, Manager]]:
-        ...
+    def __call__(self, n: int) -> AbstractContextManager[tuple[Executor, Manager]]: ...
 
 
 @contextmanager
@@ -111,7 +119,11 @@ def lock_first(is_locked: Barrier, is_done: Barrier, path: str, shared: bool):
 
 
 def lock_rest(
-    is_locked: Barrier, is_done: Optional[Barrier], path: str, shared: bool, blocking: bool
+    is_locked: Barrier,
+    is_done: Optional[Barrier],
+    path: str,
+    shared: bool,
+    blocking: bool,
 ):
     is_locked.wait()
     with path_lock(path, shared=shared, blocking=blocking):
@@ -157,7 +169,8 @@ def test_non_blocking(
         n = len(shared)
         nb = 1 + (
             1
-            if not shared[0] or (os.name == "nt" and "processes" in repr(parallelization))
+            if not shared[0]
+            or (os.name == "nt" and "processes" in repr(parallelization))
             else sum(map(lambda s: 1 if s else 0, shared))
         )
 
@@ -167,14 +180,23 @@ def test_non_blocking(
 
             tasks: list[Future[None]] = []
 
-            tasks.append(executor.submit(lock_first, is_locked, is_done, path, shared[0]))
+            tasks.append(
+                executor.submit(lock_first, is_locked, is_done, path, shared[0])
+            )
             for s in shared[1:-1]:
                 tasks.append(
                     executor.submit(
-                        lock_rest, is_locked, is_done if nb >= 3 else None, path, s, True
+                        lock_rest,
+                        is_locked,
+                        is_done if nb >= 3 else None,
+                        path,
+                        s,
+                        True,
                     )
                 )
-            tasks.append(executor.submit(lock_rest, is_locked, None, path, shared[-1], False))
+            tasks.append(
+                executor.submit(lock_rest, is_locked, None, path, shared[-1], False)
+            )
 
             with pytest.raises(exception):
                 tasks[-1].result()
@@ -185,7 +207,9 @@ def test_non_blocking(
                 task.result()
 
 
-def locked_threads(fn: Callable[..., T], parameters: list[tuple[Any, ...]], is_done: Barrier):
+def locked_threads(
+    fn: Callable[..., T], parameters: list[tuple[Any, ...]], is_done: Barrier
+):
     n = len(parameters)
     with threads(n) as (executor, _):
         tasks: list[Future[T]] = []
@@ -242,7 +266,9 @@ def lock_exclusive(are_locked: Barrier, q: Queue[int], path: str, i: int):
 
 
 @pytest.mark.parametrize("parallelization", (threads, processes))
-def test_many_shared_one_exclusive_blocking(tmp_path: str, parallelization: Parallelization):
+def test_many_shared_one_exclusive_blocking(
+    tmp_path: str, parallelization: Parallelization
+):
     if os.name == "nt" and "processes" in repr(parallelization):
         pytest.skip("TODO Processes-based tests randomly fail on Windows.")
 
@@ -259,7 +285,9 @@ def test_many_shared_one_exclusive_blocking(tmp_path: str, parallelization: Para
 
                 for i in range(1, n):
                     executor.submit(lock_shared, are_locked, results_queue, path, i)
-                last = executor.submit(lock_exclusive, are_locked, results_queue, path, 0)
+                last = executor.submit(
+                    lock_exclusive, are_locked, results_queue, path, 0
+                )
 
                 last.result()
 
@@ -273,9 +301,12 @@ def test_many_shared_one_exclusive_blocking(tmp_path: str, parallelization: Para
 
 class KeyedLock(Protocol):
     def __call__(
-        self, key: str, shared: bool = False, blocking: bool = True, reentrant: bool = False
-    ) -> AbstractContextManager[Any]:
-        ...
+        self,
+        key: str,
+        shared: bool = False,
+        blocking: bool = True,
+        reentrant: bool = False,
+    ) -> AbstractContextManager[Any]: ...
 
 
 @pytest.mark.parametrize(
@@ -435,7 +466,9 @@ def lock_shared_chained(
 
 
 @pytest.mark.parametrize("parallelization", (threads, processes))
-def test_chained_shared_one_exclusive_blocking(tmp_path: str, parallelization: Parallelization):
+def test_chained_shared_one_exclusive_blocking(
+    tmp_path: str, parallelization: Parallelization
+):
     if os.name == "nt" and "processes" in repr(parallelization):
         pytest.skip("TODO Processes-based tests randomly fail on Windows.")
 
@@ -463,7 +496,9 @@ def test_chained_shared_one_exclusive_blocking(tmp_path: str, parallelization: P
                         n,
                         i,
                     )
-                last = executor.submit(lock_exclusive, first_is_locked, results_queue, path, n - 1)
+                last = executor.submit(
+                    lock_exclusive, first_is_locked, results_queue, path, n - 1
+                )
 
                 last.result()
 
@@ -486,7 +521,9 @@ class Message(TypedDict):
     contents: Contents
 
 
-def sync_read(path: str, filename: str, before: Barrier, after: Barrier, q: Queue[Message], i: int):
+def sync_read(
+    path: str, filename: str, before: Barrier, after: Barrier, q: Queue[Message], i: int
+):
     before.wait()
     time.sleep(0.01 * random())
     with path_lock(path, shared=True):

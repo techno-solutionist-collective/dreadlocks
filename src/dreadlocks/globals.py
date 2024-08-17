@@ -4,14 +4,17 @@ from .pool import ThreadSafeKeyedRefPool
 from .thread import ShareableThreadLock
 from .process import ShareableProcessLock
 
-thread_level_lock_ref: ThreadSafeKeyedRefPool[str, ShareableThreadLock] = ThreadSafeKeyedRefPool(
-    Lock(), {}, lambda _: ShareableThreadLock()
+thread_level_lock_ref: ThreadSafeKeyedRefPool[str, ShareableThreadLock] = (
+    ThreadSafeKeyedRefPool(Lock(), {}, lambda _: ShareableThreadLock())
 )
 
-process_level_lock_ref: ThreadSafeKeyedRefPool[int, ShareableProcessLock] = ThreadSafeKeyedRefPool(
-    Lock(), {}, ShareableProcessLock
+process_level_lock_ref: ThreadSafeKeyedRefPool[int, ShareableProcessLock] = (
+    ThreadSafeKeyedRefPool(Lock(), {}, ShareableProcessLock)
 )
 
 fd_ref: ThreadSafeKeyedRefPool[str, int] = ThreadSafeKeyedRefPool(
-    Lock(), {}, lambda normalized_path: _open(normalized_path, O_RDWR), destructor=_close
+    Lock(),
+    {},
+    lambda normalized_path: _open(normalized_path, O_RDWR),
+    destructor=_close,
 )

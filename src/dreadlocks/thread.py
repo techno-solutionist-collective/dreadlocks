@@ -21,7 +21,9 @@ class ShareableThreadLock:
         self._condition = Condition(RLock())
         self._acquired_by: Counter[int] = Counter()
 
-    def lock(self, shared: bool = False, blocking: bool = True, reentrant: bool = False):
+    def lock(
+        self, shared: bool = False, blocking: bool = True, reentrant: bool = False
+    ):
         if shared:
             return self._lock_sh(blocking=blocking, reentrant=reentrant)
         else:

@@ -7,7 +7,10 @@ from .process_level_lock import process_level_lock
 
 @contextmanager
 def _process_level_path_lock(
-    normalized_path: str, shared: bool = False, blocking: bool = True, reentrant: bool = False
+    normalized_path: str,
+    shared: bool = False,
+    blocking: bool = True,
+    reentrant: bool = False,
 ):
     with fd_ref(normalized_path) as fd:
         with process_level_lock(fd, shared, blocking, reentrant):
