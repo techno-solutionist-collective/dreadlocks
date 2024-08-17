@@ -3,7 +3,7 @@ from os.path import normpath
 
 from .thread_level_lock import thread_level_lock
 from .process_level_path_lock import (
-    _process_level_path_lock,  # pyright: ignore [reportPrivateUsage]
+    _process_level_path_lock,  # type: ignore [reportPrivateUsage]
 )
 
 

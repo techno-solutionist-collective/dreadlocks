@@ -39,9 +39,9 @@ if is_windows:
         if blocking:
             while True:
                 try:
-                    msvcrt.locking(  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
+                    msvcrt.locking(  # type: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
                         fd,
-                        msvcrt.LK_LOCK,  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
+                        msvcrt.LK_LOCK,  # type: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
                         _lock_length,
                     )
                     break
@@ -50,9 +50,9 @@ if is_windows:
                         raise error
         else:
             try:
-                msvcrt.locking(  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
+                msvcrt.locking(  # type: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
                     fd,
-                    msvcrt.LK_NBLCK,  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
+                    msvcrt.LK_NBLCK,  # type: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
                     _lock_length,
                 )
             except PermissionError as error:
@@ -65,9 +65,9 @@ if is_windows:
         # NOTE: This implementation (Windows) will raise an error if attempting
         # to unlock an already unlocked fd. This does not matter as we make
         # sure we do not do that.
-        msvcrt.locking(  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
+        msvcrt.locking(  # type: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
             fd,
-            msvcrt.LK_UNLCK,  # pyright: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
+            msvcrt.LK_UNLCK,  # type: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
             _lock_length,
         )
 
