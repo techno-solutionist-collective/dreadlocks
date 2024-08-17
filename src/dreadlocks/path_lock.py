@@ -8,7 +8,9 @@ from .process_level_path_lock import (
 
 
 @contextmanager
-def path_lock(path: str, shared: bool = False, blocking: bool = True, reentrant: bool = False):
+def path_lock(
+    path: str, shared: bool = False, blocking: bool = True, reentrant: bool = False
+):
     """Locks a path both at the thread-level and process-level.
 
     Parameters
@@ -33,5 +35,7 @@ def path_lock(path: str, shared: bool = False, blocking: bool = True, reentrant:
     """
     normalized_path = normpath(path)
     with thread_level_lock(normalized_path, shared, blocking, reentrant):
-        with _process_level_path_lock(normalized_path, shared, blocking, reentrant) as fd:
+        with _process_level_path_lock(
+            normalized_path, shared, blocking, reentrant
+        ) as fd:
             yield fd
