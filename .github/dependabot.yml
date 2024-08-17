@@ -10,3 +10,14 @@ updates:
       prefix: ":arrow_up: deps"
       prefix-development: ":arrow_up: build"
       include: "scope"
+    groups:
+      pytest:
+        dependency-type: "development"
+        patterns:
+          - "pytest"
+          - "pytest-*"
+      sphinx:
+        dependency-type: "development"
+        patterns:
+          - "sphinx"
+          - "sphinx-*"
