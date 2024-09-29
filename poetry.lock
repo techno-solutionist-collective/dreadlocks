@@ -416,13 +416,13 @@ typing = ["typing-extensions (>=4.8)"]
 
 [[package]]
 name = "gprof2dot"
-version = "2022.7.29"
+version = "2024.6.6"
 description = "Generate a dot graph from the output of several profilers."
 optional = false
-python-versions = ">=2.7"
+python-versions = ">=3.8"
 files = [
-    {file = "gprof2dot-2022.7.29-py2.py3-none-any.whl", hash = "sha256:f165b3851d3c52ee4915eb1bd6cca571e5759823c2cd0f71a79bda93c2dc85d6"},
-    {file = "gprof2dot-2022.7.29.tar.gz", hash = "sha256:45b4d298bd36608fccf9511c3fd88a773f7a1abc04d6cd39445b11ba43133ec5"},
+    {file = "gprof2dot-2024.6.6-py2.py3-none-any.whl", hash = "sha256:45b14ad7ce64e299c8f526881007b9eb2c6b75505d5613e96e66ee4d5ab33696"},
+    {file = "gprof2dot-2024.6.6.tar.gz", hash = "sha256:fa1420c60025a9eb7734f65225b4da02a10fc6dd741b37fa129bc6b41951e5ab"},
 ]
 
 [[package]]
@@ -1669,4 +1669,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "01c399ddb6cf4404fa64a711d66c91957246105489653e992c8e09d8032945bc"
+content-hash = "3f01e04c6e33249ca17f350dda449fb6181e3c03f4f0f8ee055725b0dd776be2"

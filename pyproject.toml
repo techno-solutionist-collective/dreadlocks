@@ -58,7 +58,7 @@ optional = true
 
 [tool.poetry.group.profile.dependencies]
 pytest-profiling = "^1.7.0"
-gprof2dot = "^2022.7.29"
+gprof2dot = ">=2022.7.29,<2025.0.0"
 
 
 [tool.poetry.group.debug]
