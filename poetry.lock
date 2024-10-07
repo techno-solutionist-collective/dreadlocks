@@ -55,28 +55,41 @@ files = [
 dev = ["freezegun (>=1.0,<2.0)", "pytest (>=6.0)", "pytest-cov"]
 
 [[package]]
+name = "bracex"
+version = "2.5.post1"
+description = "Bash style brace expander."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "bracex-2.5.post1-py3-none-any.whl", hash = "sha256:13e5732fec27828d6af308628285ad358047cec36801598368cb28bc631dbaf6"},
+    {file = "bracex-2.5.post1.tar.gz", hash = "sha256:12c50952415bfa773d2d9ccb8e79651b8cdb1f31a42f6091b804f6ba2b4a66b6"},
+]
+
+[[package]]
 name = "bump-my-version"
-version = "0.16.2"
+version = "0.27.0"
 description = "Version bump your Python project"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "bump-my-version-0.16.2.tar.gz", hash = "sha256:966dfc6cf9765a1d4a48fbaeb587a2e3a70ed5c13b04b5ee10c6e0134d4b8342"},
-    {file = "bump_my_version-0.16.2-py3-none-any.whl", hash = "sha256:83820caf4f64465c674f41346a2135999d7c3359c35e42a67708cb957c5135be"},
+    {file = "bump_my_version-0.27.0-py3-none-any.whl", hash = "sha256:911bfaf7d847d4348844c8fd16f7a11322233fb8dc90123f638069a369003642"},
+    {file = "bump_my_version-0.27.0.tar.gz", hash = "sha256:483c517af91559644d45036648e5d99f4f8c85f8d01394097d3d3e42c9e6acad"},
 ]
 
 [package.dependencies]
 click = "*"
 pydantic = ">=2.0.0"
 pydantic-settings = "*"
+questionary = "*"
 rich = "*"
 rich-click = "*"
 tomlkit = "*"
+wcmatch = ">=8.5.1"
 
 [package.extras]
 dev = ["generate-changelog (>=0.7.6)", "git-fame (>=1.12.2)", "pip-tools", "pre-commit"]
-docs = ["Sphinx (>=4.3.0)", "furo", "ghp-import", "linkify-it-py", "myst-parser", "sphinx-autodoc-typehints", "sphinx-autodoc2", "sphinx-click", "sphinx-copybutton"]
-test = ["coverage", "pre-commit", "pytest", "pytest-cov", "pytest-mock"]
+docs = ["black", "markdown-customblocks", "mdx-truly-sane-lists", "mkdocs", "mkdocs-click", "mkdocs-drawio", "mkdocs-gen-files", "mkdocs-git-authors-plugin", "mkdocs-git-committers-plugin", "mkdocs-git-revision-date-localized-plugin (>=1.2.6)", "mkdocs-include-markdown-plugin", "mkdocs-literate-nav", "mkdocs-material", "mkdocstrings[python]", "python-frontmatter"]
+test = ["coverage", "freezegun", "pre-commit", "pytest", "pytest-cov", "pytest-mock", "pytest-sugar"]
 
 [[package]]
 name = "cachetools"
@@ -742,6 +755,20 @@ wcwidth = "*"
 tests = ["pytest", "pytest-cov", "pytest-lazy-fixture"]
 
 [[package]]
+name = "prompt-toolkit"
+version = "3.0.36"
+description = "Library for building powerful interactive command lines in Python"
+optional = false
+python-versions = ">=3.6.2"
+files = [
+    {file = "prompt_toolkit-3.0.36-py3-none-any.whl", hash = "sha256:aa64ad242a462c5ff0363a7b9cfe696c20d55d9fc60c11fd8e632d064804d305"},
+    {file = "prompt_toolkit-3.0.36.tar.gz", hash = "sha256:3e163f254bef5a03b146397d7c1963bd3e2812f0964bb9a24e6ec761fd28db63"},
+]
+
+[package.dependencies]
+wcwidth = "*"
+
+[[package]]
 name = "pydantic"
 version = "2.5.3"
 description = "Data validation using Python type hints"
@@ -1153,6 +1180,20 @@ files = [
 ]
 
 [[package]]
+name = "questionary"
+version = "2.0.1"
+description = "Python library to build pretty command line user prompts ⭐️"
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "questionary-2.0.1-py3-none-any.whl", hash = "sha256:8ab9a01d0b91b68444dff7f6652c1e754105533f083cbe27597c8110ecc230a2"},
+    {file = "questionary-2.0.1.tar.gz", hash = "sha256:bcce898bf3dbb446ff62830c86c5c6fb9a22a54146f0f5597d3da43b10d8fc8b"},
+]
+
+[package.dependencies]
+prompt_toolkit = ">=2.0,<=3.0.36"
+
+[[package]]
 name = "requests"
 version = "2.31.0"
 description = "Python HTTP for Humans."
@@ -1337,6 +1378,7 @@ optional = false
 python-versions = "*"
 files = [
     {file = "sphinx-multiversion-0.2.4.tar.gz", hash = "sha256:5cd1ca9ecb5eed63cb8d6ce5e9c438ca13af4fa98e7eb6f376be541dd4990bcb"},
+    {file = "sphinx_multiversion-0.2.4-py2.py3-none-any.whl", hash = "sha256:5c38d5ce785a335d8c8d768b46509bd66bfb9c6252b93b700ca8c05317f207d6"},
     {file = "sphinx_multiversion-0.2.4-py3-none-any.whl", hash = "sha256:dec29f2a5890ad68157a790112edc0eb63140e70f9df0a363743c6258fbeb478"},
 ]
 
@@ -1624,6 +1666,20 @@ files = [
 watchmedo = ["PyYAML (>=3.10)"]
 
 [[package]]
+name = "wcmatch"
+version = "10.0"
+description = "Wildcard/glob file name matcher."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "wcmatch-10.0-py3-none-any.whl", hash = "sha256:0dd927072d03c0a6527a20d2e6ad5ba8d0380e60870c383bc533b71744df7b7a"},
+    {file = "wcmatch-10.0.tar.gz", hash = "sha256:e72f0de09bba6a04e0de70937b0cf06e55f36f37b3deb422dfaf854b867b840a"},
+]
+
+[package.dependencies]
+bracex = ">=2.1.1"
+
+[[package]]
 name = "wcwidth"
 version = "0.2.12"
 description = "Measures the displayed width of unicode strings in a terminal"
@@ -1669,4 +1725,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.9"
-content-hash = "e3a033039a8762e74f08a6a70cda6ec790b66fcd912ade560a46c3e6fbc1eee8"
+content-hash = "c0d6b0660a7b3129e1c99e5744e02c5e47c33c2524001fcd4fd5a2c2ae32ea13"
