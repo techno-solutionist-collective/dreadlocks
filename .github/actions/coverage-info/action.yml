@@ -1,0 +1,28 @@
+name: 'Get coverage info'
+description: 'Get coverage info'
+inputs:
+  prefix:
+    description: "The coverage endpoint's prefix"
+    required: true
+    type: string
+  separator:
+    description: "The coverage endpoint's flag separator"
+    required: true
+    type: string
+  endpoints:
+    description: "The coverage endpoints' directory"
+    required: true
+    type: string
+
+outputs:
+  flags:
+    description: "All coverage flags"
+    value: ${{ steps.main.outputs.flags }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: main
+      shell: bash
+      run: |
+        echo flags="$(python '${{ github.action_path }}/main.py' '${{ inputs.prefix }}' '${{ inputs.separator }}' '${{ inputs.endpoints }}')" >> ${GITHUB_OUTPUT}

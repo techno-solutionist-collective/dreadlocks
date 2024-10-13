@@ -80,15 +80,16 @@ jobs:
         shell: bash
         run: poetry run tox -e ${{ matrix.tox-env }}
 
-      - uses: codecov/codecov-action@v3
+      - name: Upload coverage
         if: matrix.tox-env == 'unit-cover'
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: actions/upload-artifact@v4
         with:
-          fail_ci_if_error: true
-          flags: unit,${{ matrix.platform }},python-${{ matrix.python-version }}
-          files: ./.coverage.xml
-
+          name: coverage-data-unit;${{ matrix.platform }};python${{ matrix.python-version }}
+          path: .coverage
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
 
   doctest:
 
@@ -120,14 +121,16 @@ jobs:
         shell: bash
         run: poetry run tox -e ${{ matrix.tox-env }}
 
-      - uses: codecov/codecov-action@v3
+      - name: Upload coverage
         if: matrix.tox-env == 'doctest-cover'
-        env:
-          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+        uses: actions/upload-artifact@v4
         with:
-          fail_ci_if_error: true
-          flags: doctest,${{ matrix.platform }},python-${{ matrix.python-version }}
-          files: ./.coverage.xml
+          name: coverage-data-doctest;${{ matrix.platform }};python${{ matrix.python-version }}
+          path: .coverage
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
 
 
   pre-commit:
@@ -266,3 +269,161 @@ jobs:
 
       - name: Build package
         run: poetry build
+
+
+  coverage-merge:
+    needs:
+      - unit
+      - doctest
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Merge coverage artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: coverage-data
+          pattern: coverage-data-*
+          include-hidden-files: true
+          separate-directories: true
+          delete-merged: true
+          retention-days: 1
+          compression-level: 9
+
+
+  coverage-info:
+    needs:
+      - coverage-merge
+
+    runs-on: ubuntu-latest
+
+    outputs:
+      flags: ${{ steps.info.outputs.flags }}
+
+    steps:
+
+      - uses: actions/checkout@v4
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data
+          path: coverage
+
+      - uses: ./.github/actions/coverage-info
+        id: info
+        with:
+          prefix: coverage-data-
+          separator: ';'
+          endpoints: coverage
+
+      - run: |
+          printf '%s\n' '${{ steps.info.outputs.flags }}'
+
+
+  coverage-report:
+    needs:
+      - coverage-info
+
+    strategy:
+      matrix:
+        platform:
+          - ubuntu-latest
+        python-version:
+          - '3.12'
+        flag: ${{ fromJSON(needs.coverage-info.outputs.flags) }}
+        include:
+          - flag: 'all'
+
+    #runs-on: ${{ matrix.platform }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/set-up-poetry
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-data
+          path: coverage
+
+      - name: Generate coverage flag metadata
+        id: flag
+        uses: ./.github/actions/coverage-flag
+        with:
+          prefix: coverage-data-
+          separator: ';'
+          endpoints: coverage
+          suffix: '/.coverage'
+          flag: ${{ matrix.flag }}
+
+      - name: Combine coverage data
+        env:
+          FILES: ${{ steps.flag.outputs.files }}
+        run: |
+          jq -n "${FILES}[]" --raw-output | xargs -r poetry run tox -e coverage -- -- combine -a
+
+      - name: Generate coverage report
+        run: |
+          poetry run tox -e coverage -- -- html
+
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report-${{ matrix.flag }}
+          path: htmlcov/
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 1
+          compression-level: 9
+
+
+  coverage-publish:
+    needs:
+      - coverage-info
+      - coverage-report
+
+    runs-on: ubuntu-latest
+
+    steps:
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Merge coverage report artifacts
+        uses: actions/upload-artifact/merge@v4
+        with:
+          name: coverage-report
+          pattern: coverage-report-*
+          separate-directories: true
+          delete-merged: true
+          retention-days: 1
+          compression-level: 9
+
+      - name: Download coverage report artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: reports
+
+      - name: Compute current commit hash
+        run: >
+          echo "HEAD_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
+
+      - name: Publish coverage
+        uses: ./.github/actions/coverage-publish
+        with:
+          repository-name: techno-solutionist-collective/dreadlocks-coverage
+          token: ${{ secrets.COVERAGE_PUBLISH_TOKEN }}
+          branch: gh-pages
+          sha: ${{ env.HEAD_SHA }}
+          flags: ${{ needs.coverage-info.outputs.flags }}
+          reports: "reports/"
+          prefix: "coverage-report-"
+          build: "gh-pages/"
