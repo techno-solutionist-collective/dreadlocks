@@ -1,0 +1,41 @@
+name: 'Generate coverage flag metadata'
+description: 'Generate coverage flag metadata'
+inputs:
+  prefix:
+    description: "The coverage endpoint's prefix"
+    required: true
+    type: string
+  separator:
+    description: "The coverage endpoint's flag separator"
+    required: true
+    type: string
+  endpoints:
+    description: "The coverage endpoints' directory"
+    required: true
+    type: string
+  suffix:
+    description: "The coverage filename's suffix"
+    required: true
+    type: string
+  flag:
+    description: "The flag to generate the report for"
+    required: true
+    type: string
+
+outputs:
+  files:
+    description: "The coverage files for the input flag"
+    value: ${{ steps.main.outputs.files }}
+
+runs:
+  using: "composite"
+  steps:
+    - id: main
+      shell: bash
+      run: |
+        key="files"
+        value="$(python '${{ github.action_path }}/main.py' '${{ inputs.prefix }}' '${{ inputs.separator }}' '${{ inputs.endpoints }}' '${{ inputs.suffix }}' '${{ inputs.flag }}')"
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        printf '%s<<%s\n' ${key} "${EOF}" >> ${GITHUB_OUTPUT}
+        printf '%s\n' "${value}" >> ${GITHUB_OUTPUT}
+        printf '%s\n' "${EOF}" >> ${GITHUB_OUTPUT}

@@ -1,0 +1,92 @@
+name: 'Publish coverage'
+description: 'Publish coverage'
+inputs:
+  repository-name:
+    description: 'The repository to commit to'
+    required: true
+    type: string
+  token:
+    description: 'The GH pages token to use'
+    required: true
+    type: string
+  branch:
+    description: 'The branch to commit to'
+    required: true
+    type: string
+  sha:
+    description: 'The commit sha to publish'
+    required: true
+    type: string
+  flags:
+    description: 'The flags to use'
+    required: true
+    type: string
+  reports:
+    description: 'Location of the reports'
+    required: true
+    type: string
+  prefix:
+    description: 'Prefix of each report'
+    required: true
+    type: string
+  build:
+    description: 'Location of the build'
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+    - name: Ensure `gh-pages/commits/${{ inputs.sha }}/group-by/flag` directory exists
+      env:
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        mkdir -p "${BUILD}/commits/${SHA}/group-by/flag"
+
+    - name: Copy main coverage report
+      env:
+        REPORTS: ${{ inputs.reports }}
+        PREFIX: ${{ inputs.prefix }}
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        rsync -r "${REPORTS}${PREFIX}all/" "${BUILD}/commits/${SHA}/all"
+
+    - name: Copy other coverage reports
+      env:
+        REPORTS: ${{ inputs.reports }}
+        PREFIX: ${{ inputs.prefix }}
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+        FLAGS: ${{ inputs.flags }}
+      shell: bash
+      run: |
+        jq -n "${FLAGS}[]" --raw-output | while read -r flag
+        do
+          rsync -r "${REPORTS}${PREFIX}${flag}/" "${BUILD}/commits/${SHA}/group-by/flag/${flag}"
+        done
+
+    - name: Create symbolic links for all refs pointing to commit
+      env:
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        git for-each-ref --points-at HEAD --format '%(refname)' | sed 's:^refs/remotes/[^/]*/:refs/heads/:g' | sort | uniq | while read -r ref
+        do
+          mkdir -p "${BUILD}$(dirname "${ref}")"
+          root="$(sed 's:/:../:g' <<< "${ref//[^\/]}")"
+          ln -sf "${root}commits/${HEAD_SHA}" "${BUILD}${ref}"
+        done
+
+    - name: Publish docs to GitHub pages
+      uses: JamesIves/github-pages-deploy-action@v4.6.4
+      with:
+        repository-name: ${{ inputs.repository-name }}
+        token: ${{ inputs.token }}
+        branch: ${{ inputs.branch }}
+        folder: ${{ inputs.build }}
+        clean: false
