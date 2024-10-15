@@ -56,7 +56,7 @@ runs:
                   for (const file of data) {
                     const li = document.createElement('li');
                     const a = document.createElement('a');
-                    a.setAttribute('href', encodeURI(file.path));
+                    a.setAttribute('href', encodeURI(file.name));
                     a.textContent = file.name;
                     li.appendChild(a);
                     ul.appendChild(li);
