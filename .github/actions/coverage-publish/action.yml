@@ -43,7 +43,7 @@ runs:
       shell: bash
       run: |
         key="contents"
-        value=$(cat <<EOF
+        value="$(cat <<EOF
           <html>
             <body>
               <script>
@@ -67,8 +67,7 @@ runs:
               </script>
             <body>
           </html>
-          EOF
-        )
+        EOF)"
         EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
         printf '%s<<%s\n' ${key} "${EOF}" >> ${GITHUB_OUTPUT}
         printf '%s\n' "${value}" >> ${GITHUB_OUTPUT}
