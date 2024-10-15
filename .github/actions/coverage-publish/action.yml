@@ -49,7 +49,7 @@ runs:
               <script>
                 (async () => {
                   const path = window.location.pathname.split('/').slice(2).join('/');
-                  const response = await fetch(`https://api.github.com/repos/${{ github.repository }}/contents/${path}`);
+                  const response = await fetch('https://api.github.com/repos/${{ github.repository }}/contents/${path}');
                   const data = await response.json();
 
                   const ul = document.createElement('ul');
