@@ -79,7 +79,7 @@ runs:
         BUILD: ${{ inputs.build }}
       shell: bash
       run: |
-        touch "${BUILD}/.nojekyll"
+        touch "${BUILD}.nojekyll"
 
     - name: Ensure `gh-pages/index.html` file exists
       env:
@@ -87,7 +87,7 @@ runs:
         CONTENTS: ${{ steps.index.outputs.contents }}
       shell: bash
       run: |
-        printf '%s\n' "${CONTENTS}" > "${BUILD}/index.html"
+        printf '%s\n' "${CONTENTS}" > "${BUILD}index.html"
 
     - name: Ensure `gh-pages/commits/${{ inputs.sha }}/group-by/flag` directory exists
       env:
@@ -95,11 +95,11 @@ runs:
         BUILD: ${{ inputs.build }}
       shell: bash
       run: |
-        mkdir -p "${BUILD}/commits/${SHA}/group-by/flag"
-        ln -sf "../../../../index.html" "${BUILD}/commits/${SHA}/group-by/flag/index.html"
-        ln -sf "../../../index.html" "${BUILD}/commits/${SHA}/group-by/index.html"
-        ln -sf "../../index.html" "${BUILD}/commits/${SHA}/index.html"
-        ln -sf "../index.html" "${BUILD}/commits/index.html"
+        mkdir -p "${BUILD}commits/${SHA}/group-by/flag"
+        ln -sf "../../../../index.html" "${BUILD}commits/${SHA}/group-by/flag/index.html"
+        ln -sf "../../../index.html" "${BUILD}commits/${SHA}/group-by/index.html"
+        ln -sf "../../index.html" "${BUILD}commits/${SHA}/index.html"
+        ln -sf "../index.html" "${BUILD}commits/index.html"
 
     - name: Copy main coverage report
       env:
@@ -109,7 +109,7 @@ runs:
         BUILD: ${{ inputs.build }}
       shell: bash
       run: |
-        rsync -r "${REPORTS}${PREFIX}all/" "${BUILD}/commits/${SHA}/all"
+        rsync -r "${REPORTS}${PREFIX}all/" "${BUILD}commits/${SHA}/all"
 
     - name: Copy other coverage reports
       env:
@@ -122,7 +122,7 @@ runs:
       run: |
         jq -n "${FLAGS}[]" --raw-output | while read -r flag
         do
-          rsync -r "${REPORTS}${PREFIX}${flag}/" "${BUILD}/commits/${SHA}/group-by/flag/${flag}"
+          rsync -r "${REPORTS}${PREFIX}${flag}/" "${BUILD}commits/${SHA}/group-by/flag/${flag}"
         done
 
     - name: Create symbolic links for all refs pointing to commit
