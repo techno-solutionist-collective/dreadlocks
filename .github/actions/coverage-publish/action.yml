@@ -37,6 +37,58 @@ inputs:
 runs:
   using: "composite"
   steps:
+
+    - name: Create index file contents
+      id: index
+      shell: bash
+      run: |
+        key="contents"
+        value="$(cat <<EOF
+          <html>
+            <body>
+              <script>
+                (async () => {
+                  const path = window.location.pathname.split('/').slice(2).join('/');
+                  const response = await fetch(`https://api.github.com/repos/${{ github.repository }}/contents/${path}`);
+                  const data = await response.json();
+
+                  const ul = document.createElement('ul');
+                  for (const file of data) {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.setAttribute('href', encodeURI(file.path));
+                    a.textContent = file.name;
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                  }
+
+                  document.body.appendChild(ul);
+                })()
+              </script>
+            <body>
+          </html>
+          EOF
+        )"
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        printf '%s<<%s\n' ${key} "${EOF}" >> ${GITHUB_OUTPUT}
+        printf '%s\n' "${value}" >> ${GITHUB_OUTPUT}
+        printf '%s\n' "${EOF}" >> ${GITHUB_OUTPUT}
+
+    - name: Ensure `gh-pages/.nojekyll` file exists
+      env:
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        touch "${BUILD}/.nojekyll"
+
+    - name: Ensure `gh-pages/index.html` file exists
+      env:
+        BUILD: ${{ inputs.build }}
+        CONTENTS: ${{ steps.index.outputs.contents }}
+      shell: bash
+      run: |
+        printf '%s\n' "${CONTENTS}" > "${BUILD}/index.html"
+
     - name: Ensure `gh-pages/commits/${{ inputs.sha }}/group-by/flag` directory exists
       env:
         SHA: ${{ inputs.sha }}
@@ -44,6 +96,10 @@ runs:
       shell: bash
       run: |
         mkdir -p "${BUILD}/commits/${SHA}/group-by/flag"
+        ln -sf "../../../../index.html" "${BUILD}/commits/${SHA}/group-by/flag/index.html"
+        ln -sf "../../../index.html" "${BUILD}/commits/${SHA}/group-by/index.html"
+        ln -sf "../../index.html" "${BUILD}/commits/${SHA}/index.html"
+        ln -sf "../index.html" "${BUILD}/commits/index.html"
 
     - name: Copy main coverage report
       env:
