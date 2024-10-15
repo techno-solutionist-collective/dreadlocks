@@ -74,6 +74,14 @@ runs:
         printf '%s\n' "${value}" >> ${GITHUB_OUTPUT}
         printf '%s\n' "${EOF}" >> ${GITHUB_OUTPUT}
 
+    - name: Ensure `gh-pages/commits/${{ inputs.sha }}/group-by/flag` directory exists
+      env:
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        mkdir -p "${BUILD}commits/${SHA}/group-by/flag"
+
     - name: Ensure `gh-pages/.nojekyll` file exists
       env:
         BUILD: ${{ inputs.build }}
@@ -89,13 +97,12 @@ runs:
       run: |
         printf '%s\n' "${CONTENTS}" > "${BUILD}index.html"
 
-    - name: Ensure `gh-pages/commits/${{ inputs.sha }}/group-by/flag` directory exists
+    - name: Create `index.html` at all levels
       env:
         SHA: ${{ inputs.sha }}
         BUILD: ${{ inputs.build }}
       shell: bash
       run: |
-        mkdir -p "${BUILD}commits/${SHA}/group-by/flag"
         ln -sf "../../../../index.html" "${BUILD}commits/${SHA}/group-by/flag/index.html"
         ln -sf "../../../index.html" "${BUILD}commits/${SHA}/group-by/index.html"
         ln -sf "../../index.html" "${BUILD}commits/${SHA}/index.html"
