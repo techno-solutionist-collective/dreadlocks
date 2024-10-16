@@ -44,20 +44,28 @@ runs:
       run: |
         key="contents"
         value="$(cat <<EOF
-          <html>
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+            </head>
             <body>
               <script>
                 (async () => {
                   const path = window.location.pathname.split('/').slice(2).join('/');
-                  const response = await fetch('https://api.github.com/repos/${{ github.repository }}-coverage/contents/' + path);
+                  const response = await fetch('https://api.github.com/repos/${{ inputs.repository-name }}/contents/' + path);
                   const data = await response.json();
+                  const exclude = new Set(['.nojekyll', 'index.html']);
+                  const entries = data
+                    .filter(({name}) => !exclude.has(name))
+                    .sort(({name: nameA}, {name: nameB}) => nameA < nameB ? -1 : nameA > nameB ? 1 : 0);
 
                   const ul = document.createElement('ul');
-                  for (const file of data) {
+                  for (const entry of data) {
                     const li = document.createElement('li');
                     const a = document.createElement('a');
-                    a.setAttribute('href', encodeURI(file.name));
-                    a.textContent = file.name;
+                    a.setAttribute('href', encodeURI(entry.name));
+                    a.textContent = entry.name;
                     li.appendChild(a);
                     ul.appendChild(li);
                   }
