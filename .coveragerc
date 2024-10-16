@@ -1,5 +1,6 @@
 [run]
 omit = *-test.py
+relative_files = true
 
 [xml]
 output = .coverage.xml
