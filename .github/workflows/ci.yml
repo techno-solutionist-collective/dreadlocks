@@ -327,16 +327,18 @@ jobs:
 
     strategy:
       matrix:
+        extend:
+          - false
         platform:
           - ubuntu-latest
         python-version:
           - '3.12'
         flag: ${{ fromJSON(needs.coverage-info.outputs.flags) }}
         include:
-          - flag: 'all'
+          - extend: true
+            flag: 'all'
 
-    #runs-on: ${{ matrix.platform }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.platform }}
 
     steps:
       - uses: actions/checkout@v4
