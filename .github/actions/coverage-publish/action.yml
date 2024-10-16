@@ -61,7 +61,7 @@ runs:
                     .sort(({name: nameA}, {name: nameB}) => nameA < nameB ? -1 : nameA > nameB ? 1 : 0);
 
                   const ul = document.createElement('ul');
-                  for (const entry of data) {
+                  for (const entry of entries) {
                     const li = document.createElement('li');
                     const a = document.createElement('a');
                     a.setAttribute('href', encodeURI(entry.name));
