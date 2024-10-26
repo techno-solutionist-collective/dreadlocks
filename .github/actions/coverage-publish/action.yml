@@ -115,6 +115,13 @@ runs:
       run: |
         mkdir -p "${BUILD}commits/${SHA}/group-by/flag"
 
+    - name: Debug
+      env:
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: >
+        ls -aR "${BUILD}"
+
     - name: Ensure `gh-pages/.nojekyll` file exists
       env:
         BUILD: ${{ inputs.build }}
@@ -130,6 +137,13 @@ runs:
       run: |
         printf '%s\n' "${CONTENTS}" > "${BUILD}index.html"
 
+    - name: Debug
+      env:
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: >
+        ls -aR "${BUILD}"
+
     - name: Create `index.html` at all levels
       env:
         SHA: ${{ inputs.sha }}
@@ -141,6 +155,13 @@ runs:
         ln -sf "../../index.html" "${BUILD}commits/${SHA}/index.html"
         ln -sf "../index.html" "${BUILD}commits/index.html"
 
+    - name: Debug
+      env:
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: >
+        ls -aR "${BUILD}"
+
     - name: Copy main coverage report
       env:
         REPORTS: ${{ inputs.reports }}
@@ -150,6 +171,13 @@ runs:
       shell: bash
       run: |
         rsync -r "${REPORTS}${PREFIX}all/" "${BUILD}commits/${SHA}/all"
+
+    - name: Debug
+      env:
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: >
+        ls -aR "${BUILD}"
 
     - name: Copy flag-specific coverage reports
       env:
@@ -164,6 +192,13 @@ runs:
         do
           rsync -r "${REPORTS}${PREFIX}${flag}/" "${BUILD}commits/${SHA}/group-by/flag/${flag}"
         done
+
+    - name: Debug
+      env:
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: >
+        ls -aR "${BUILD}"
 
     - name: Create symbolic links for all refs pointing to commit
       env:
@@ -185,6 +220,13 @@ runs:
             ln -sf "${root}/index.html" "${BUILD}${ref}/index.html"
           done
         done
+
+    - name: Debug
+      env:
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: >
+        ls -aR "${BUILD}"
 
     - name: Publish docs to GitHub pages
       uses: JamesIves/github-pages-deploy-action@v4.6.4
