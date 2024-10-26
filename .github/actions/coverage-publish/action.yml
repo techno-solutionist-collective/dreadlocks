@@ -151,7 +151,7 @@ runs:
       run: |
         rsync -r "${REPORTS}${PREFIX}all/" "${BUILD}commits/${SHA}/all"
 
-    - name: Copy other coverage reports
+    - name: Copy flag-specific coverage reports
       env:
         REPORTS: ${{ inputs.reports }}
         PREFIX: ${{ inputs.prefix }}
@@ -176,6 +176,14 @@ runs:
           mkdir -p "${BUILD}$(dirname "${ref}")"
           root="$(sed 's:/:../:g' <<< "${ref//[^\/]}")"
           ln -sf "${root}commits/${HEAD_SHA}" "${BUILD}${ref}"
+          while true; do
+            root="$(sed 's:^\.\./::g' <<< "${root}")"
+            if [ -z "${root}" ]; then
+              break
+            fi
+            ref="$(sed 's:/[^/]*$::g' <<< "${ref}")"
+            ln -sf "${root}/index.html" "${BUILD}${ref}/index.html"
+          done
         done
 
     - name: Publish docs to GitHub pages
