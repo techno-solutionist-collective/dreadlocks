@@ -229,7 +229,7 @@ runs:
         ls -aR "${BUILD}"
 
     - name: Publish docs to GitHub pages
-      uses: JamesIves/github-pages-deploy-action@v4.6.4
+      uses: JamesIves/github-pages-deploy-action@v4.6.8
       with:
         repository-name: ${{ inputs.repository-name }}
         token: ${{ inputs.token }}
