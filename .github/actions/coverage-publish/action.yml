@@ -1,0 +1,196 @@
+name: 'Publish coverage'
+description: 'Publish coverage'
+inputs:
+  repository-name:
+    description: 'The repository to commit to'
+    required: true
+    type: string
+  token:
+    description: 'The GH pages token to use'
+    required: true
+    type: string
+  branch:
+    description: 'The branch to commit to'
+    required: true
+    type: string
+  sha:
+    description: 'The commit sha to publish'
+    required: true
+    type: string
+  flags:
+    description: 'The flags to use'
+    required: true
+    type: string
+  reports:
+    description: 'Location of the reports'
+    required: true
+    type: string
+  prefix:
+    description: 'Prefix of each report'
+    required: true
+    type: string
+  build:
+    description: 'Location of the build'
+    required: true
+    type: string
+
+runs:
+  using: "composite"
+  steps:
+
+    - name: Create index file contents
+      id: index
+      shell: bash
+      run: |
+        key="contents"
+        value="$(cat <<EOF
+          <!doctype html>
+          <html lang="en">
+            <head>
+              <meta charset="UTF-8" />
+            </head>
+            <body>
+              <script>
+                (async () => {
+                  let path = window.location.pathname.split('/').slice(2).filter((x) => x !== '').join('/');
+                  let response = await fetch('https://api.github.com/repos/${{ inputs.repository-name }}/contents/' + path);
+                  let data = await response.json();
+
+                  if (!Array.isArray(data)) {
+                    if (data.type !== 'symlink') {
+                      console.debug({data});
+                      throw new Error('Expected symlink');
+                    }
+
+                    // NOTE: Resolve symlink.
+                    const target = data.target.split('/');
+                    let count = 0;
+                    for (const part of target) {
+                      if (part !== '..') break;
+                      ++count;
+                    }
+
+                    path = path.split('/').slice(0, -1 - count).concat(target.slice(count)).join('/');
+                    response = await fetch('https://api.github.com/repos/${{ inputs.repository-name }}/contents/' + path);
+                    data = await response.json();
+                  }
+
+                  if (!Array.isArray(data)) {
+                    console.debug({data});
+                    throw new Error('Expected array');
+                  }
+
+                  const exclude = new Set(['.nojekyll', 'index.html']);
+                  const entries = data
+                    .filter(({name}) => !exclude.has(name))
+                    .sort(({name: nameA}, {name: nameB}) => nameA < nameB ? -1 : nameA > nameB ? 1 : 0);
+
+                  const ul = document.createElement('ul');
+                  for (const entry of entries) {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.setAttribute('href', encodeURI(entry.name));
+                    a.textContent = entry.name;
+                    li.appendChild(a);
+                    ul.appendChild(li);
+                  }
+
+                  document.body.appendChild(ul);
+                })()
+              </script>
+            <body>
+          </html>
+        EOF
+        )"
+        EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+        printf '%s<<%s\n' ${key} "${EOF}" >> ${GITHUB_OUTPUT}
+        printf '%s\n' "${value}" >> ${GITHUB_OUTPUT}
+        printf '%s\n' "${EOF}" >> ${GITHUB_OUTPUT}
+
+    - name: Ensure `gh-pages/commits/${{ inputs.sha }}/group-by/flag` directory exists
+      env:
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        mkdir -p "${BUILD}commits/${SHA}/group-by/flag"
+
+    - name: Ensure `gh-pages/.nojekyll` file exists
+      env:
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        touch "${BUILD}.nojekyll"
+
+    - name: Ensure `gh-pages/index.html` file exists
+      env:
+        BUILD: ${{ inputs.build }}
+        CONTENTS: ${{ steps.index.outputs.contents }}
+      shell: bash
+      run: |
+        printf '%s\n' "${CONTENTS}" > "${BUILD}index.html"
+
+    - name: Create `index.html` at all levels
+      env:
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        ln -sf "../../../../index.html" "${BUILD}commits/${SHA}/group-by/flag/index.html"
+        ln -sf "../../../index.html" "${BUILD}commits/${SHA}/group-by/index.html"
+        ln -sf "../../index.html" "${BUILD}commits/${SHA}/index.html"
+        ln -sf "../index.html" "${BUILD}commits/index.html"
+
+    - name: Copy main coverage report
+      env:
+        REPORTS: ${{ inputs.reports }}
+        PREFIX: ${{ inputs.prefix }}
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        rsync -r "${REPORTS}${PREFIX}all/" "${BUILD}commits/${SHA}/all"
+
+    - name: Copy flag-specific coverage reports
+      env:
+        REPORTS: ${{ inputs.reports }}
+        PREFIX: ${{ inputs.prefix }}
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+        FLAGS: ${{ inputs.flags }}
+      shell: bash
+      run: |
+        jq -n "${FLAGS}[]" --raw-output | while read -r flag
+        do
+          rsync -r "${REPORTS}${PREFIX}${flag}/" "${BUILD}commits/${SHA}/group-by/flag/${flag}"
+        done
+
+    - name: Create symbolic links for all refs pointing to commit
+      env:
+        SHA: ${{ inputs.sha }}
+        BUILD: ${{ inputs.build }}
+      shell: bash
+      run: |
+        git for-each-ref --points-at HEAD --format '%(refname)' | sed 's:^refs/remotes/[^/]*/:refs/heads/:g' | sort | uniq | while read -r ref
+        do
+          mkdir -p "${BUILD}$(dirname "${ref}")"
+          root="$(sed 's:/:../:g' <<< "${ref//[^\/]}")"
+          cp -rl "${BUILD}commits/${SHA}" "${BUILD}${ref}"
+          while true; do
+            root="$(sed 's:^\.\./::g' <<< "${root}")"
+            if [ -z "${root}" ]; then
+              break
+            fi
+            ref="$(sed 's:/[^/]*$::g' <<< "${ref}")"
+            ln -sf "${root}/index.html" "${BUILD}${ref}/index.html"
+          done
+        done
+
+    - name: Publish docs to GitHub pages
+      uses: JamesIves/github-pages-deploy-action@v4.6.8
+      with:
+        repository-name: ${{ inputs.repository-name }}
+        token: ${{ inputs.token }}
+        branch: ${{ inputs.branch }}
+        folder: ${{ inputs.build }}
+        clean: false
