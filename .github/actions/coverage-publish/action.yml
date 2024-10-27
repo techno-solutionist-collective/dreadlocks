@@ -175,7 +175,7 @@ runs:
         do
           mkdir -p "${BUILD}$(dirname "${ref}")"
           root="$(sed 's:/:../:g' <<< "${ref//[^\/]}")"
-          ln -sf "${root}commits/${HEAD_SHA}" "${BUILD}${ref}"
+          cp -rl "${root}commits/${HEAD_SHA}" "${BUILD}${ref}"
           while true; do
             root="$(sed 's:^\.\./::g' <<< "${root}")"
             if [ -z "${root}" ]; then
