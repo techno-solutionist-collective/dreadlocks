@@ -422,10 +422,6 @@ jobs:
           name: coverage-report
           path: reports
 
-      - name: Debug
-        run: >
-          ls -aR reports
-
       - name: Compute current commit hash
         run: >
           echo "HEAD_SHA=$(git rev-parse HEAD)" >> "$GITHUB_ENV"
