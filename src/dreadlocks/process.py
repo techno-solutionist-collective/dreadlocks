@@ -39,32 +39,59 @@ class ShareableProcessLock:
             recursively locking dead-locks.
         """
         thread_id = get_ident()
-        if self._lock.acquire(blocking=blocking):
-            try:
-                if not reentrant and (
-                    self._shared_by[thread_id] or self._exclusively_held_by[thread_id]
-                ):
-                    raise RecursiveDeadlockError()
+        while True:
+            if self._lock.acquire(blocking=blocking):
+                try:
+                    if not reentrant and (
+                        self._shared_by[thread_id] or self._exclusively_held_by[thread_id]
+                    ):
+                        raise RecursiveDeadlockError()
 
-                is_held_shared = bool(self._shared_by)
-                is_held_exclusively = bool(self._exclusively_held_by)
-                is_held = is_held_shared or is_held_exclusively
+                    is_held_shared = bool(self._shared_by)
+                    is_held_exclusively = bool(self._exclusively_held_by)
+                    is_held = is_held_shared or is_held_exclusively
 
-                if not is_held or (is_held_shared and not shared and not is_windows):
-                    # NOTE: We only lock when the first locking attempt is made, or
-                    # if we want to upgrade the lock to an exclusive lock, but only on
-                    # UNIX since current implementation always uses exclusive locks on
-                    # Windows.
-                    process_level_lock(self._fd, shared, blocking)
+                    if not is_held or (is_held_shared and not shared and not is_windows):
+                        # NOTE: We only lock when the first locking attempt is made, or
+                        # if we want to upgrade the lock to an exclusive lock, but only on
+                        # UNIX since current implementation always uses exclusive locks on
+                        # Windows.
+                        process_level_lock(self._fd, shared, blocking and shared)
 
-                if shared:
-                    self._shared_by[thread_id] += 1
-                else:
-                    self._exclusively_held_by[thread_id] += 1
-            finally:
-                self._lock.release()
-        else:
-            raise AcquiringProcessLevelLockWouldBlockError()
+                    if shared:
+                        self._shared_by[thread_id] += 1
+                    else:
+                        self._exclusively_held_by[thread_id] += 1
+
+                    break
+                except AcquiringProcessLevelLockWouldBlockError:
+                    if not blocking:
+                        raise
+
+                finally:
+                    self._lock.release()
+
+                assert not shared
+
+                process_level_lock(self._fd, shared=False, blocking=True)
+
+                with self._lock:
+                    # NOTE: Restore the true locked state.
+                    is_held_shared = bool(self._shared_by)
+                    is_held_exclusively = bool(self._exclusively_held_by)
+                    is_held = is_held_shared or is_held_exclusively
+
+                    if not is_held:
+                        # NOTE: We only release the lock once we have exhausted all
+                        # locking attempts
+                        process_level_unlock(self._fd)
+                    elif not is_held_exclusively and not shared and not is_windows:
+                        # NOTE: We downgrade the lock from exclusive to shared if we
+                        # are not on Windows and we just released an exclusive
+                        # lock, and no exclusive lock is left.
+                        process_level_lock(self._fd, shared=True, blocking=True)
+            else:
+                raise AcquiringProcessLevelLockWouldBlockError()
 
         try:
             yield

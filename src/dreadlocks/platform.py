@@ -35,7 +35,7 @@ if is_windows:
     def process_level_lock(fd: int, shared: bool = False, blocking: bool = True):
         # NOTE: Simulates shared lock using an exclusive lock. This
         # implementation does not allow to lock the same fd multiple times.
-        # This does not matter a we make sure we do not do that.
+        # This does not matter as we make sure not to do that.
         if blocking:
             while True:
                 try:
@@ -64,7 +64,7 @@ if is_windows:
     def process_level_unlock(fd: int):
         # NOTE: This implementation (Windows) will raise an error if attempting
         # to unlock an already unlocked fd. This does not matter as we make
-        # sure we do not do that.
+        # sure not to do that.
         msvcrt.locking(  # type: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
             fd,
             msvcrt.LK_UNLCK,  # type: ignore [reportGeneralTypeIssues, reportUnknownMemberType]
@@ -91,7 +91,34 @@ else:
     def process_level_lock(fd: int, shared: bool = False, blocking: bool = True):
         operation = fcntl.LOCK_SH if shared else fcntl.LOCK_EX
         if blocking:
-            fcntl.lockf(fd, operation)
+            while True:
+                try:
+                    fcntl.lockf(fd, operation)
+                    break
+                except OSError as error:
+                    if (
+                        not is_mac_os
+                        and error.errno == 35
+                        and error.strerror == "Resource deadlock avoided"
+                    ):
+                        # From man fcntl(2)
+                        # Deadlock detection The deadlock-detection algorithm
+                        # employed by the kernel when dealing with F_SETLKW
+                        # requests can yield both false negatives (failures to
+                        # detect deadlocks, leaving a set of deadlocked
+                        # processes blocked indefinitely) and false positives
+                        # (EDEADLK errors when there is no deadlock).  For ex‐
+                        # ample,  the kernel limits the lock depth of its
+                        # dependency search to 10 steps, meaning that circular
+                        # deadlock chains that exceed that size will not be
+                        # detected.  In addition, the kernel may falsely
+                        # indicate a deadlock when two or more processes
+                        # created  using  the clone(2) CLONE_FILES flag place
+                        # locks that appear (to the kernel) to conflict.
+                        pass
+                    else:
+                        raise
+
         else:
             try:
                 fcntl.lockf(fd, operation | fcntl.LOCK_NB)
@@ -104,5 +131,5 @@ else:
     def process_level_unlock(fd: int):
         # NOTE: This implementation (UNIX) will NOT raise an error if attempting
         # to unlock an already unlocked fd. This does not matter as we make
-        # sure we do not do that.
+        # sure not to do that.
         fcntl.lockf(fd, fcntl.LOCK_UN)
